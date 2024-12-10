@@ -34,8 +34,9 @@ export function Navbar() {
     <div className="w-full bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
           <Image height={40} src="/icon.svg" alt="Logo" width={40} />
+          <p className="text-xl font-bold">Council</p>
         </Link>
 
         {/* Desktop Navigation */}
