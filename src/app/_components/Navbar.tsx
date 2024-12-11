@@ -31,7 +31,7 @@ import * as React from "react";
 
 export function Navbar() {
   return (
-    <div className="w-full bg-background">
+    <div className="w-full border-b border-accent bg-background">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">

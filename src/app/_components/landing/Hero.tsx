@@ -4,7 +4,7 @@ import HeroVideoDialog from "@/components/ui/hero-video-dialog";
 import SlideText from "@/components/ui/slide-text";
 import SlideWrapper from "@/components/ui/slide-wrapper";
 import WordPullUp from "@/components/ui/word-pull-up";
-import { Search } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const avatars = [
@@ -36,43 +36,47 @@ const avatars = [
 
 const Hero = () => {
   return (
-    <div className="mt-28 flex min-h-96 w-screen flex-col items-center justify-end">
+    <div className="relative mt-28 flex min-h-96 w-screen flex-col items-center justify-end z-10">
       <WordPullUp
-        className="text-4xl font-bold tracking-[-0.02em] text-black dark:text-white md:w-[29rem] md:text-5xl md:leading-[3rem]"
-        words="Student opportunities powered with AI"
+        className="relative z-10 text-4xl font-bold tracking-[-0.02em] text-black dark:text-white md:w-[29rem] md:text-5xl md:leading-[3rem]"
+        words="Student opportunities powered by AI"
       />
       <SlideText
         delay={1}
         text="Council helps schools manage and share job opportunities with students.  Simple, organized, and effective."
-        className="mt-4 text-center text-xl font-light text-black dark:text-white md:w-[29rem] md:text-xl"
+        className="relative z-10 mt-4 text-center text-xl font-light text-black dark:text-white md:w-[29rem] md:text-xl"
       />
-      <SlideWrapper delay={1.5} className="mt-5">
+      <SlideWrapper delay={1.5} className="relative z-10 mt-5">
         <Button size={"lg"} asChild>
           <Link href={"/auth/signin"}>
-            <Search className="" size={20} />
-            Find your school
+            Get started
+            <ArrowRight />
           </Link>
         </Button>
       </SlideWrapper>
-      <SlideWrapper delay={2} className="mt-5">
+      <SlideWrapper delay={2} className="relative z-10 mt-5">
         <AvatarCircles className="" numPeople={99} avatarUrls={avatars} />
       </SlideWrapper>
       <SlideText
         delay={2.5}
         direction="right"
-        className="w-48 text-center text-sm font-extralight"
+        className="relative z-10 w-48 text-center text-sm font-extralight"
         text={"Join hundreds of other students using council"}
       />
-      <SlideWrapper delay={3} className="relative mt-10 size-[60rem]">
+      <SlideWrapper
+        delay={3}
+        duration={2.5}
+        className="relative z-10 mt-10 w-full max-w-[60rem] px-4 md:px-8"
+      >
         <HeroVideoDialog
-          className="block dark:hidden"
+          className="block w-full dark:hidden"
           animationStyle="from-center"
           videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
           thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
           thumbnailAlt="Hero Video"
         />
         <HeroVideoDialog
-          className="hidden dark:block"
+          className="hidden w-full dark:block"
           animationStyle="from-center"
           videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
           thumbnailSrc="https://startup-template-sage.vercel.app/hero-dark.png"
