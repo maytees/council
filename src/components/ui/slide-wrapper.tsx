@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
 
 const SlideWrapper = ({
   children,
@@ -9,6 +10,9 @@ const SlideWrapper = ({
   distance = 50,
   direction = "up",
 }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
   const getInitialPosition = () => {
     switch (direction) {
       case "up":
@@ -26,17 +30,22 @@ const SlideWrapper = ({
 
   return (
     <motion.div
+      ref={ref}
       initial={{ ...getInitialPosition(), opacity: 0 }}
-      animate={{
-        y: 0,
-        x: 0,
-        opacity: 1,
-        transition: {
-          duration: duration,
-          delay: delay,
-          ease: [0.22, 1, 0.36, 1],
-        },
-      }}
+      animate={
+        isInView
+          ? {
+            y: 0,
+            x: 0,
+            opacity: 1,
+            transition: {
+              duration: duration,
+              delay: delay,
+              ease: [0.22, 1, 0.36, 1],
+            },
+          }
+          : {}
+      }
       className={className}
     >
       {children}

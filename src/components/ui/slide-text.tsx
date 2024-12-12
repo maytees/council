@@ -1,5 +1,7 @@
 "use client";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
+import { useRef } from "react";
+
 const SlideText = ({
   text,
   className = "",
@@ -7,6 +9,9 @@ const SlideText = ({
   duration = 0.5,
   delay = 0,
 }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
   const getInitialPosition = () => {
     switch (direction) {
       case "up":
@@ -37,8 +42,9 @@ const SlideText = ({
 
   return (
     <motion.div
+      ref={ref}
       initial={getInitialPosition()}
-      animate={getFinalPosition()}
+      animate={isInView ? getFinalPosition() : getInitialPosition()}
       className={`${className}`}
     >
       {text}

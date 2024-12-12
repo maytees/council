@@ -42,11 +42,11 @@ const Hero = () => {
         words="Student opportunities powered by AI"
       />
       <SlideText
-        delay={1}
+        delay={0.5}
         text="Council helps schools manage and share job opportunities with students.  Simple, organized, and effective."
         className="relative z-10 mt-4 text-center text-xl font-light text-black dark:text-white md:w-[29rem] md:text-xl"
       />
-      <SlideWrapper delay={1.5} className="relative z-10 mt-5">
+      <SlideWrapper delay={0.8} className="relative z-10 mt-5">
         <Button size={"lg"} asChild>
           <Link href={"/auth/signin"}>
             Get started
@@ -54,18 +54,18 @@ const Hero = () => {
           </Link>
         </Button>
       </SlideWrapper>
-      <SlideWrapper delay={2} className="relative z-10 mt-5">
+      <SlideWrapper delay={1} className="relative z-10 mt-5">
         <AvatarCircles className="" numPeople={99} avatarUrls={avatars} />
       </SlideWrapper>
       <SlideText
-        delay={2.5}
+        delay={1}
         direction="right"
         className="relative z-10 w-48 text-center text-sm font-extralight"
         text={"Join hundreds of other students using council"}
       />
       <SlideWrapper
-        delay={3}
-        duration={2.5}
+        delay={1}
+        duration={1.5}
         className="relative z-10 mt-10 w-full max-w-[60rem] px-4 md:px-8"
       >
         <HeroVideoDialog

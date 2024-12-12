@@ -1,7 +1,9 @@
 "use client";
 
 import DotPattern from "@/components/ui/dot-pattern";
+import Bento from "./_components/landing/Bento";
 import Hero from "./_components/landing/Hero";
+import Pricing from "./_components/landing/Pricing";
 
 const LandingPage = () => {
 
@@ -21,6 +23,8 @@ const LandingPage = () => {
         />
       </div>
       <Hero />
+      <Bento />
+      <Pricing />
     </div>
   );
 };

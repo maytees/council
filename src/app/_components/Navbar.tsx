@@ -31,23 +31,23 @@ import * as React from "react";
 
 export function Navbar() {
   return (
-    <div className="w-full border-b border-accent bg-background">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <div className="w-full z-50 border-b border-accent bg-background">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 z-50">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 z-50">
           <Image height={40} src="/icon.svg" alt="Logo" width={40} />
           <p className="text-xl font-bold">Council</p>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:block">
-          <NavigationMenu>
-            <NavigationMenuList className="flex gap-2">
+        <div className="hidden lg:block z-50">
+          <NavigationMenu className="z-50">
+            <NavigationMenuList className="flex gap-2 z-50">
               {/* Jobs */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Jobs</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-2 p-4">
+              <NavigationMenuItem className="z-50">
+                <NavigationMenuTrigger className="z-50">Jobs</NavigationMenuTrigger>
+                <NavigationMenuContent className="z-50">
+                  <ul className="grid w-[400px] gap-2 p-4 z-50">
                     <ListItem href="/jobs/browse" title="Browse All Jobs">
                       Explore all available job opportunities
                     </ListItem>
@@ -62,10 +62,10 @@ export function Navbar() {
               </NavigationMenuItem>
 
               {/* Employers */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>For Employers</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-2 p-4">
+              <NavigationMenuItem className="z-50">
+                <NavigationMenuTrigger className="z-50">For Employers</NavigationMenuTrigger>
+                <NavigationMenuContent className="z-50">
+                  <ul className="grid w-[400px] gap-2 p-4 z-50">
                     <ListItem href="/employers/post" title="Post a Job">
                       Submit new job listings
                     </ListItem>
@@ -83,10 +83,10 @@ export function Navbar() {
               </NavigationMenuItem>
 
               {/* Students */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>For Students</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-2 p-4">
+              <NavigationMenuItem className="z-50">
+                <NavigationMenuTrigger className="z-50">For Students</NavigationMenuTrigger>
+                <NavigationMenuContent className="z-50">
+                  <ul className="grid w-[400px] gap-2 p-4 z-50">
                     <ListItem href="/students/apply" title="How to Apply">
                       Application guide and tips
                     </ListItem>
@@ -104,7 +104,7 @@ export function Navbar() {
               </NavigationMenuItem>
 
               {/* About - No dropdown */}
-              <NavigationMenuItem>
+              <NavigationMenuItem className="z-50">
                 <Link href="/about" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     About
@@ -113,7 +113,7 @@ export function Navbar() {
               </NavigationMenuItem>
 
               {/* Pricing - No dropdown */}
-              <NavigationMenuItem>
+              <NavigationMenuItem className="z-50">
                 <Link href="/pricing" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Pricing
@@ -125,21 +125,21 @@ export function Navbar() {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="lg:hidden">
+        <div className="lg:hidden z-50">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="z-50">
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="z-50">
               <SheetHeader>
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="py-4">
-                <Accordion type="single" collapsible className="w-full">
+                <Accordion type="single" collapsible className="w-full z-50">
                   {/* Jobs */}
-                  <AccordionItem value="jobs">
+                  <AccordionItem value="jobs" className="z-50">
                     <AccordionTrigger>Jobs</AccordionTrigger>
                     <AccordionContent>
                       <div className="flex flex-col space-y-2">
@@ -166,7 +166,7 @@ export function Navbar() {
                   </AccordionItem>
 
                   {/* Employers */}
-                  <AccordionItem value="employers">
+                  <AccordionItem value="employers" className="z-50">
                     <AccordionTrigger>For Employers</AccordionTrigger>
                     <AccordionContent>
                       <div className="flex flex-col space-y-2">
@@ -199,7 +199,7 @@ export function Navbar() {
                   </AccordionItem>
 
                   {/* Students */}
-                  <AccordionItem value="students">
+                  <AccordionItem value="students" className="z-50">
                     <AccordionTrigger>For Students</AccordionTrigger>
                     <AccordionContent>
                       <div className="flex flex-col space-y-2">
@@ -255,12 +255,12 @@ const ListItem = React.forwardRef<
   React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {
   return (
-    <li>
+    <li className="z-50">
       <NavigationMenuLink asChild>
         <a
           ref={ref}
           className={cn(
-            "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground z-50",
             className,
           )}
           {...props}
