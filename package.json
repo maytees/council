@@ -75,7 +75,6 @@
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.0",
     "react-resizable-panels": "^2.1.7",
-    "recharts": "^2.14.1",
     "server-only": "^0.0.1",
     "sonner": "^1.7.1",
     "superjson": "^2.2.1",

@@ -23,31 +23,36 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ModeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import Icon from "./Icon";
 
 export function Navbar() {
   return (
-    <div className="w-full z-50 border-b border-accent bg-background">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 z-50">
+    <div className="z-50 w-full border-b border-accent bg-background">
+      <div className="z-50 mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 z-50">
-          <Image height={40} src="/icon.svg" alt="Logo" width={40} />
+        <Link href="/" className="z-50 flex items-center gap-2">
+          {/* <Image height={40} src="/icon.svg" alt="Logo" width={40} /> */}
+          <Icon />
           <p className="text-xl font-bold">Council</p>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:block z-50">
+        <div className="z-50 hidden lg:block">
           <NavigationMenu className="z-50">
-            <NavigationMenuList className="flex gap-2 z-50">
+            <NavigationMenuList className="z-50 flex gap-2">
               {/* Jobs */}
               <NavigationMenuItem className="z-50">
-                <NavigationMenuTrigger className="z-50">Jobs</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="z-50">
+                  Jobs
+                </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <ul className="grid w-[400px] gap-2 p-4 z-50">
+                  <ul className="z-50 grid w-[400px] gap-2 p-4">
                     <ListItem href="/jobs/browse" title="Browse All Jobs">
                       Explore all available job opportunities
                     </ListItem>
@@ -63,9 +68,11 @@ export function Navbar() {
 
               {/* Employers */}
               <NavigationMenuItem className="z-50">
-                <NavigationMenuTrigger className="z-50">For Employers</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="z-50">
+                  For Employers
+                </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <ul className="grid w-[400px] gap-2 p-4 z-50">
+                  <ul className="z-50 grid w-[400px] gap-2 p-4">
                     <ListItem href="/employers/post" title="Post a Job">
                       Submit new job listings
                     </ListItem>
@@ -84,9 +91,11 @@ export function Navbar() {
 
               {/* Students */}
               <NavigationMenuItem className="z-50">
-                <NavigationMenuTrigger className="z-50">For Students</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="z-50">
+                  For Students
+                </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <ul className="grid w-[400px] gap-2 p-4 z-50">
+                  <ul className="z-50 grid w-[400px] gap-2 p-4">
                     <ListItem href="/students/apply" title="How to Apply">
                       Application guide and tips
                     </ListItem>
@@ -120,12 +129,18 @@ export function Navbar() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+
+              {/* Theme Toggle */}
+              <NavigationMenuItem className="z-50">
+                <ModeToggle />
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="lg:hidden z-50">
+        <div className="z-50 flex items-center gap-2 lg:hidden">
+          <ModeToggle />
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="z-50">
@@ -137,7 +152,7 @@ export function Navbar() {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="py-4">
-                <Accordion type="single" collapsible className="w-full z-50">
+                <Accordion type="single" collapsible className="z-50 w-full">
                   {/* Jobs */}
                   <AccordionItem value="jobs" className="z-50">
                     <AccordionTrigger>Jobs</AccordionTrigger>
@@ -260,7 +275,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground z-50",
+            "z-50 block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className,
           )}
           {...props}

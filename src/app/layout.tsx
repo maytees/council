@@ -3,7 +3,9 @@ import "@/styles/globals.css";
 import { type Metadata } from "next";
 import { Sofia_Sans } from "next/font/google";
 
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { TRPCReactProvider } from "@/trpc/react";
+import Footer from "./_components/Footer";
 import { Navbar } from "./_components/Navbar";
 
 export const metadata: Metadata = {
@@ -18,13 +20,22 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sofia.className}`}>
+    <html lang="en" className={`${sofia.className}`} suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
-          <Navbar />
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+            enableColorScheme
+          >
+            <Navbar />
+            {children}
+            <Footer />
+          </ThemeProvider>
         </TRPCReactProvider>
       </body>
-    </html>
+    </html >
   );
 }
