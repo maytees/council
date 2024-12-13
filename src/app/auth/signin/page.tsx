@@ -31,11 +31,13 @@ export default async function LoginPage() {
           <form
             action={async (formData: FormData) => {
               "use server";
-              await signIn("resend", { ...formData, redirectTo: "/dashboard" });
+              await signIn("resend", formData);
             }}
           >
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
+                {/* This is because u cant pass it into await signIn("resend") */}
+                <input type="hidden" name="redirectTo" value="/dashboard" />
                 <Input
                   id="email"
                   name="email"

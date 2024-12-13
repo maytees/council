@@ -49,7 +49,7 @@ export const authConfig = {
   pages: {
     signIn: "/auth/signin",
     signOut: "/auth/signout",
-    
+    verifyRequest: "/auth/verify-request",
   },
   adapter: PrismaAdapter(db),
   callbacks: {
