@@ -26,7 +26,6 @@ import {
 import { ModeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import Icon from "./Icon";
