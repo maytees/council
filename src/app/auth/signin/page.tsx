@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { auth } from "@/server/auth";
+import { auth, signIn } from "@/server/auth";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
@@ -28,11 +28,17 @@ export default async function LoginPage() {
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form
+            action={async (formData: FormData) => {
+              "use server";
+              await signIn("resend", { ...formData, redirectTo: "/dashboard" });
+            }}
+          >
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Input
                   id="email"
+                  name="email"
                   placeholder="name@example.com"
                   type="email"
                   required

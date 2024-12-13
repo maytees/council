@@ -1,8 +1,8 @@
+import { db } from "@/server/db";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-
-import { db } from "@/server/db";
+import Resend from "next-auth/providers/resend";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -33,6 +33,9 @@ declare module "next-auth" {
 export const authConfig = {
   providers: [
     GoogleProvider,
+    Resend({
+      from: "Roport.dev <no-reply@roport.dev>",
+    }),
     /**
      * ...add more providers here.
      *
@@ -46,6 +49,7 @@ export const authConfig = {
   pages: {
     signIn: "/auth/signin",
     signOut: "/auth/signout",
+    
   },
   adapter: PrismaAdapter(db),
   callbacks: {
