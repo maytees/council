@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
 import SlideText from "@/components/ui/slide-text";
 import SlideWrapper from "@/components/ui/slide-wrapper";
-import { Home } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 

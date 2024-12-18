@@ -17,17 +17,17 @@ const Bento = () => {
         <SlideText
           text="Everything you need to succeed"
           className="text-3xl font-bold tracking-tight"
-          delay={0.5}
+          delay={0.2}
         />
         <SlideText
           text="A comprehensive platform designed to connect students with opportunities"
           className="mt-4 text-lg text-muted-foreground"
-          delay={0.8}
+          delay={0.4}
           direction="right"
         />
       </div>
 
-      <SlideWrapper delay={1}>
+      <SlideWrapper delay={0.5}>
         <BentoGrid>
           <BentoCard
             name="Smart Job Matching"
