@@ -1,5 +1,7 @@
+import MagicLinkEmail from "@/email/MagicLink";
 import { db } from "@/server/db";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { render } from "@react-email/components";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
@@ -35,8 +37,30 @@ export const authConfig = {
     GoogleProvider,
     Resend({
       from: "Roport.dev <no-reply@roport.dev>",
+      async sendVerificationRequest(params) {
+        const { identifier: to, provider, url, theme } = params;
+        const { host } = new URL(url);
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${provider.apiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: provider.from,
+            to,
+            subject: `Sign in to ${host}`,
+            html: await render(MagicLinkEmail({ url })),
+            // react: MagicLinkEmail({ url }),
+          }),
+        });
+
+        if (!res.ok)
+          throw new Error("Resend error: " + JSON.stringify(await res.json()));
+      },
     }),
-    /**
+
+    /*
      * ...add more providers here.
      *
      * Most other providers require a bit more work than the Discord provider. For example, the

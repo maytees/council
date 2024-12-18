@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Sofia_Sans } from "next/font/google";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { auth } from "@/server/auth";
 import { TRPCReactProvider } from "@/trpc/react";
 import Footer from "./_components/Footer";
 import { Navbar } from "./_components/Navbar";
@@ -16,9 +17,10 @@ export const metadata: Metadata = {
 
 const sofia = Sofia_Sans({ subsets: ["latin"] });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await auth();
   return (
     <html lang="en" className={`${sofia.className}`} suppressHydrationWarning>
       <body>
@@ -30,7 +32,7 @@ export default function RootLayout({
             disableTransitionOnChange
             enableColorScheme
           >
-            <Navbar />
+            <Navbar session={session} />
             {children}
             <Footer />
           </ThemeProvider>

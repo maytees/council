@@ -8,6 +8,14 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
@@ -25,12 +33,13 @@ import {
 } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
+import { type Session } from "next-auth";
 import Link from "next/link";
 import * as React from "react";
 import Icon from "./Icon";
 
-export function Navbar() {
+export function Navbar({ session }: { session: Session | null }) {
   return (
     <div className="z-50 w-full border-b border-accent bg-background">
       <div className="z-50 mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -133,6 +142,40 @@ export function Navbar() {
               <NavigationMenuItem className="z-50">
                 <ModeToggle />
               </NavigationMenuItem>
+
+              {/* User Profile or Get Started */}
+              <NavigationMenuItem className="z-50">
+                {session ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <User className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/profile">Profile</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/settings">Settings</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard">Dashboard</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <Link href="/auth/signout">Logout</Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Button asChild>
+                    <Link href="/auth/signin">Get Started</Link>
+                  </Button>
+                )}
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -140,6 +183,36 @@ export function Navbar() {
         {/* Mobile Navigation */}
         <div className="z-50 flex items-center gap-2 lg:hidden">
           <ModeToggle />
+          {session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href={"/auth/signout"}>Logout</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild>
+              <Link href="/auth/signin">Get Started</Link>
+            </Button>
+          )}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="z-50">

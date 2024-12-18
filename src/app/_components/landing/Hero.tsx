@@ -4,6 +4,7 @@ import HeroVideoDialog from "@/components/ui/hero-video-dialog";
 import SlideText from "@/components/ui/slide-text";
 import SlideWrapper from "@/components/ui/slide-wrapper";
 import WordPullUp from "@/components/ui/word-pull-up";
+import { auth } from "@/server/auth";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -34,9 +35,11 @@ const avatars = [
   },
 ];
 
-const Hero = () => {
+const Hero = async () => {
+  const session = await auth();
+
   return (
-    <div className="relative mt-28 flex min-h-96 w-screen flex-col items-center justify-end z-10">
+    <div className="relative z-10 mt-28 flex min-h-96 w-screen flex-col items-center justify-end">
       <WordPullUp
         className="relative z-10 text-4xl font-bold tracking-[-0.02em] text-black dark:text-white md:w-[29rem] md:text-5xl md:leading-[3rem]"
         words="Student opportunities powered by AI"
@@ -48,10 +51,17 @@ const Hero = () => {
       />
       <SlideWrapper delay={0.8} className="relative z-10 mt-5">
         <Button size={"lg"} asChild>
-          <Link href={"/auth/signin"}>
-            Get started
-            <ArrowRight />
-          </Link>
+          {!session?.user ? (
+            <Link href={"/auth/signin"}>
+              Get started
+              <ArrowRight />
+            </Link>
+          ) : (
+            <Link href={"/dashboard"}>
+              Go to dashboard
+              <ArrowRight />
+            </Link>
+          )}
         </Button>
       </SlideWrapper>
       <SlideWrapper delay={1} className="relative z-10 mt-5">

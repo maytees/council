@@ -1,16 +1,13 @@
-"use client";
-
 import DotPattern from "@/components/ui/dot-pattern";
 import Bento from "./_components/landing/Bento";
 import Hero from "./_components/landing/Hero";
 import Pricing from "./_components/landing/Pricing";
 
 const LandingPage = () => {
-
   return (
     <div className="relative flex min-h-screen w-screen flex-col items-center">
       <div className="absolute -top-20 h-screen w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-background" />
+        <div className="bg-gradient-radial absolute inset-0 from-transparent via-transparent to-background" />
         <DotPattern
           width={16}
           height={16}
