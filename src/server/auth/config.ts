@@ -49,7 +49,7 @@ export const authConfig = {
           body: JSON.stringify({
             from: provider.from,
             to,
-            subject: `Sign in to ${host}`,
+            subject: `Council - Click this verification link to sign in!`,
             html: await render(MagicLinkEmail({ url })),
             // react: MagicLinkEmail({ url }),
           }),

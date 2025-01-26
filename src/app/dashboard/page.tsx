@@ -1,0 +1,165 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/server";
+import { BookmarkPlus, Building2, Users } from "lucide-react";
+import { redirect } from "next/navigation";
+import JobPosts from "../_components/dashboard/JobPosts";
+
+const googleDesc = `
+Google is seeking talented Software Engineering interns to join our dynamic teams in developing
+innovative solutions that impact billions of users worldwide. You'll collaborate with world-class
+engineers on real projects while gaining hands-on experience with our cutting-edge technologies
+and agile development practices.
+`;
+
+const amazonDesc = `
+Amazon is looking for innovative Software Development Engineer interns to help build the future of
+technology. You'll work on large-scale systems that power Amazon's global infrastructure, gaining
+invaluable experience in distributed systems, cloud computing, and agile methodologies while
+working alongside industry leaders.
+`;
+
+const robloxDesc = `
+Join Roblox as a Software Engineering intern and help shape the future of gaming and social
+interaction. You'll work on cutting-edge technology that enables millions of users to connect,
+create, and share experiences in our immersive platform while learning about game development,
+scalable systems, and modern software architecture.
+`;
+
+const accentureDesc = `
+Accenture is seeking motivated Software Engineering interns to join our technology consulting
+practice. You'll work with diverse clients across industries, helping solve complex business
+challenges through innovative technical solutions while gaining exposure to emerging technologies
+and professional consulting skills.
+`;
+export default async function DashboardPage() {
+  const profile = await api.profile.get();
+
+  if (!profile?.profileCompleted) {
+    redirect("/profile/complete");
+  }
+
+  return (
+    <div className="mx-auto flex h-screen max-w-7xl gap-6 p-6">
+      {/* Left Sidebar */}
+      <div className="hidden lg:flex w-[280px] flex-col gap-6">
+        <Card className="p-6">
+          <div className="flex flex-col items-center gap-4">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={profile.image ?? ""} alt={profile.name ?? ""} />
+              <AvatarFallback>
+                {profile.name
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+            <div className="text-center">
+              <h2 className="text-xl font-bold">{profile.name}</h2>
+              <p className="text-sm text-muted-foreground">
+                {profile.userType === "COMPANY"
+                  ? profile.position
+                  : profile.userType?.toLowerCase()}
+              </p>
+            </div>
+            <Button className="w-full" asChild>
+              <a href="/profile">View Profile</a>
+            </Button>
+          </div>
+          <Separator className="my-4" />
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-muted-foreground">About</p>
+            <p className="text-sm">{profile.bio}</p>
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="h-5 w-5" />
+            <h3 className="font-semibold">Connected Friends</h3>
+          </div>
+          <div className="flex flex-col gap-4">
+            {["Alice Smith", "Bob Johnson", "Carol White"].map((friend) => (
+              <div key={friend} className="flex items-center gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>{friend[0]}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm">{friend}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Main Content */}
+      <JobPosts
+        jobs={[
+          {
+            company: "Google",
+            desc: googleDesc,
+            name: "Software Engineer Intern - Summer 2025",
+            icon: "/googlelogo.jpg",
+          },
+          {
+            company: "Amazon",
+            desc: amazonDesc,
+            name: "Software Development Engineer Intern - Summer 2025",
+            icon: "/amazonlogo.webp",
+          },
+          {
+            company: "Roblox",
+            desc: robloxDesc,
+            name: "Software Engineering Intern - Summer 2025",
+            icon: "/robloxlogo.webp",
+          },
+          {
+            company: "Accenture",
+            desc: accentureDesc,
+            name: "Technology Consulting Intern - Summer 2025",
+            icon: "/accenturelogo.png",
+          },
+        ]}
+      />
+
+      {/* Right Sidebar */}
+      <div className="hidden xl:flex w-[300px] flex-col gap-6">
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <BookmarkPlus className="h-5 w-5" />
+            <h3 className="font-semibold">Saved Jobs</h3>
+          </div>
+          <div className="flex flex-col gap-4">
+            {[
+              { role: "Frontend Developer", company: "Microsoft" },
+              { role: "Backend Engineer", company: "Meta" },
+            ].map((job) => (
+              <div key={job.role} className="flex flex-col gap-1">
+                <p className="text-sm font-medium">{job.role}</p>
+                <p className="text-xs text-muted-foreground">{job.company}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Building2 className="h-5 w-5" />
+            <h3 className="font-semibold">Following Companies</h3>
+          </div>
+          <div className="flex flex-col gap-4">
+            {["Apple", "Netflix", "Tesla"].map((company) => (
+              <div key={company} className="flex items-center gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>{company[0]}</AvatarFallback>
+                </Avatar>
+                <span className="text-sm">{company}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}

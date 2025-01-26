@@ -63,6 +63,19 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+
+    // Profile fields
+    userType      String?   // "STUDENT" | "COUNSELOR" | "COMPANY"
+    bio           String?
+    schoolCode    String?   // For counselors to set their school code
+    school        String?   // For students to indicate their school
+    position      String?   // Job title or position
+    company       String?   // Company name for company users
+    location      String?   // Location
+    skills        String?   // Comma-separated list of skills
+    experience    String?   // Years of experience
+    education     String?   // Education details
+    profileCompleted Boolean @default(false)
 }
 
 model VerificationToken {
