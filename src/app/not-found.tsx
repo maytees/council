@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
 import SlideText from "@/components/ui/slide-text";
 import SlideWrapper from "@/components/ui/slide-wrapper";
-import Link from "next/link";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function NotFoundPage() {
   return (

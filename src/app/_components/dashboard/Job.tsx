@@ -18,7 +18,7 @@ export type JobType = {
 
 const Job = ({ name, desc, company, icon }: JobType) => {
   return (
-    <div className="my-3 flex h-auto w-full flex-col justify-between rounded-2xl border px-3 py-3 shadow-md hover:cursor-pointer md:my-5 md:h-[16rem] md:w-[40rem] md:px-5 md:py-4">
+    <div className="flex h-auto w-full flex-col justify-between rounded-2xl border px-3 py-3 shadow-md hover:cursor-pointer md:my-2 md:h-[16rem] md:w-[40rem] md:px-5 md:py-4">
       <div>
         <div className="flex flex-col gap-2 sm:flex-row">
           <div className="flex flex-1 flex-row items-start justify-between">

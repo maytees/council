@@ -104,6 +104,7 @@ const Bento = () => {
           />
         </BentoGrid>
       </SlideWrapper>
+      <h1 id="pricing"></h1>
     </div>
   );
 };

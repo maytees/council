@@ -62,13 +62,19 @@ export function Navbar({ session }: { session: Session | null }) {
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
                   <ul className="z-50 grid w-[400px] gap-2 p-4">
-                    <ListItem href="/jobs/browse" title="Browse All Jobs">
+                    <ListItem href="/dashboard" title="Browse All Jobs">
                       Explore all available job opportunities
                     </ListItem>
-                    <ListItem href="/jobs/featured" title="Featured Positions">
+                    <ListItem
+                      href="/dashboard?filter=featured"
+                      title="Featured Positions"
+                    >
                       View highlighted opportunities
                     </ListItem>
-                    <ListItem href="/jobs/search" title="Search Jobs">
+                    <ListItem
+                      href="/dashboard?focus=search"
+                      title="Search Jobs"
+                    >
                       Find specific positions using filters
                     </ListItem>
                   </ul>
@@ -248,19 +254,19 @@ export function Navbar({ session }: { session: Session | null }) {
                     <AccordionContent>
                       <div className="flex flex-col space-y-2">
                         <Link
-                          href="/jobs/browse"
+                          href="/dashboard"
                           className="py-2 hover:underline"
                         >
                           Browse All Jobs
                         </Link>
                         <Link
-                          href="/jobs/featured"
+                          href="/dashboard?filter=featured"
                           className="py-2 hover:underline"
                         >
                           Featured Positions
                         </Link>
                         <Link
-                          href="/jobs/search"
+                          href="/dashboard?focus=search"
                           className="py-2 hover:underline"
                         >
                           Search Jobs

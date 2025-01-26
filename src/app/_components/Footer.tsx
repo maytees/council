@@ -27,7 +27,7 @@ const Footer = () => {
             <ul className="mt-4 space-y-2">
               <li>
                 <Link
-                  href="/jobs/browse"
+                  href="/dashboard"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Browse All Jobs
@@ -35,7 +35,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/jobs/featured"
+                  href="/dashboard?filter=featured"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Featured Positions
@@ -43,7 +43,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/jobs/search"
+                  href="/dashboard?focus=search"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Search Jobs
@@ -105,7 +105,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/pricing"
+                  href="/#pricing"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Pricing

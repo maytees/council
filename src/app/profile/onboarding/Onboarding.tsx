@@ -319,7 +319,7 @@ const Onboarding = () => {
 
             {formData.userType === "COMPANY" && (
               <>
-                <div className="space-y-3">
+                <div className="">
                   <Label htmlFor="company" className="text-lg">
                     Company Name
                   </Label>
@@ -341,7 +341,7 @@ const Onboarding = () => {
                     <p className="text-sm text-red-500">{errors.company}</p>
                   )}
                 </div>
-                <div className="space-y-3">
+                <div className="">
                   <Label htmlFor="position" className="text-lg">
                     Position
                   </Label>
