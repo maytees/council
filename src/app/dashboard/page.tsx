@@ -1,9 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { BookmarkPlus, Building2, Users } from "lucide-react";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import JobPosts from "../_components/dashboard/JobPosts";
 
@@ -34,34 +36,46 @@ practice. You'll work with diverse clients across industries, helping solve comp
 challenges through innovative technical solutions while gaining exposure to emerging technologies
 and professional consulting skills.
 `;
-export default async function DashboardPage() {
-  const profile = await api.profile.get();
 
-  if (!profile?.profileCompleted) {
-    redirect("/profile/complete");
+export default async function DashboardPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return redirect("/auth/signin");
+  }
+
+  const user = await api.profile.get();
+
+  if (!user?.profileCompleted) {
+    redirect("/profile/onboarding");
   }
 
   return (
-    <div className="mx-auto flex h-screen max-w-7xl gap-6 p-6">
-      {/* Left Sidebar */}
-      <div className="hidden lg:flex w-[280px] flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6 p-6 lg:h-screen lg:flex-row">
+      {/* Left Sidebar - Profile Section */}
+      <div className="flex w-full flex-col gap-6 lg:w-[280px]">
         <Card className="p-6">
           <div className="flex flex-col items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={profile.image ?? ""} alt={profile.name ?? ""} />
-              <AvatarFallback>
-                {profile.name
-                  ?.split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
+            <Image
+              className="h-20 w-20 rounded-full"
+              width={80}
+              height={80}
+              src={user.image ?? ""}
+              alt={user.name ?? session.user.id}
+            />
+
+            {/* <Avatar className="h-20 w-20">
+              <AvatarImage src={user.image ?? ""} alt="profile" />
+              <AvatarFallback>{user.name?.[0] ?? "U"}</AvatarFallback>
+            </Avatar> */}
             <div className="text-center">
-              <h2 className="text-xl font-bold">{profile.name}</h2>
+              <h2 className="text-xl font-bold">{user.name}</h2>
               <p className="text-sm text-muted-foreground">
-                {profile.userType === "COMPANY"
-                  ? profile.position
-                  : profile.userType?.toLowerCase()}
+                {user.userType === "COMPANY"
+                  ? `${user.position} at ${user.company}`
+                  : user.userType === "COUNSELOR"
+                    ? `Counselor at ${user.school}`
+                    : `Student at ${user.school}`}
               </p>
             </div>
             <Button className="w-full" asChild>
@@ -71,12 +85,26 @@ export default async function DashboardPage() {
           <Separator className="my-4" />
           <div className="flex flex-col gap-2">
             <p className="text-sm text-muted-foreground">About</p>
-            <p className="text-sm">{profile.bio}</p>
+            <p className="text-sm">{user.bio || "No bio provided"}</p>
+            {user.location && (
+              <p className="text-sm text-muted-foreground">
+                📍 {user.location}
+              </p>
+            )}
+            {user.skills && (
+              <div className="flex flex-wrap gap-1">
+                {user.skills.split(",").map((skill) => (
+                  <span key={skill} className="text-xs text-muted-foreground">
+                    #{skill.trim()}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </Card>
 
-        <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
+        <Card className="p-6 lg:block">
+          <div className="mb-4 flex items-center gap-2">
             <Users className="h-5 w-5" />
             <h3 className="font-semibold">Connected Friends</h3>
           </div>
@@ -94,39 +122,41 @@ export default async function DashboardPage() {
       </div>
 
       {/* Main Content */}
-      <JobPosts
-        jobs={[
-          {
-            company: "Google",
-            desc: googleDesc,
-            name: "Software Engineer Intern - Summer 2025",
-            icon: "/googlelogo.jpg",
-          },
-          {
-            company: "Amazon",
-            desc: amazonDesc,
-            name: "Software Development Engineer Intern - Summer 2025",
-            icon: "/amazonlogo.webp",
-          },
-          {
-            company: "Roblox",
-            desc: robloxDesc,
-            name: "Software Engineering Intern - Summer 2025",
-            icon: "/robloxlogo.webp",
-          },
-          {
-            company: "Accenture",
-            desc: accentureDesc,
-            name: "Technology Consulting Intern - Summer 2025",
-            icon: "/accenturelogo.png",
-          },
-        ]}
-      />
+      <div className="flex-1">
+        <JobPosts
+          jobs={[
+            {
+              company: "Google",
+              desc: googleDesc,
+              name: "Software Engineer Intern - Summer 2025",
+              icon: "/googlelogo.jpg",
+            },
+            {
+              company: "Amazon",
+              desc: amazonDesc,
+              name: "Software Development Engineer Intern - Summer 2025",
+              icon: "/amazonlogo.webp",
+            },
+            {
+              company: "Roblox",
+              desc: robloxDesc,
+              name: "Software Engineering Intern - Summer 2025",
+              icon: "/robloxlogo.webp",
+            },
+            {
+              company: "Accenture",
+              desc: accentureDesc,
+              name: "Technology Consulting Intern - Summer 2025",
+              icon: "/accenturelogo.png",
+            },
+          ]}
+        />
+      </div>
 
       {/* Right Sidebar */}
-      <div className="hidden xl:flex w-[300px] flex-col gap-6">
+      <div className="flex w-full flex-col gap-6 lg:hidden xl:flex xl:w-[300px]">
         <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             <BookmarkPlus className="h-5 w-5" />
             <h3 className="font-semibold">Saved Jobs</h3>
           </div>
@@ -144,7 +174,7 @@ export default async function DashboardPage() {
         </Card>
 
         <Card className="p-6">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             <Building2 className="h-5 w-5" />
             <h3 className="font-semibold">Following Companies</h3>
           </div>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -18,9 +18,11 @@ const JobPosts = ({ jobs }: { jobs: JobType[] }) => {
   });
 
   return (
-    <div className="mt-4 md:mt-10 flex flex-col items-start px-4 md:px-0 pr-10">
-      <div className="flex w-full flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
-        <h1 className="text-left text-xl md:text-2xl font-bold">Job postings</h1>
+    <div className="flex h-[97vh] flex-col items-start px-4 pr-10">
+      <div className="flex w-full flex-col items-start justify-between gap-4 md:flex-row md:items-center md:gap-0">
+        <h1 className="text-left text-xl font-bold md:text-2xl">
+          Job postings
+        </h1>
         <Input
           className="w-full md:w-2/3"
           placeholder="Search jobs..."
@@ -30,17 +32,14 @@ const JobPosts = ({ jobs }: { jobs: JobType[] }) => {
       </div>
       <Separator className="my-4 md:my-5" />
 
-      <div className="flex flex-col gap-4 overflow-y-auto w-full md:w-[40.5rem]">
+      <div className="flex w-full flex-col gap-4 overflow-y-auto md:w-[40.5rem]">
         {filteredJobs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center w-full h-[16rem] gap-4 py-8 rounded-2xl border px-3 md:px-5">
-            <p className="text-muted-foreground text-center">
+          <div className="flex h-[16rem] w-full flex-col items-center justify-center gap-4 rounded-2xl border px-3 py-8 md:px-5">
+            <p className="text-center text-muted-foreground">
               No jobs found matching your search criteria
             </p>
             {searchQuery && (
-              <Button
-                variant="outline"
-                onClick={() => setSearchQuery("")}
-              >
+              <Button variant="outline" onClick={() => setSearchQuery("")}>
                 Clear Search
               </Button>
             )}

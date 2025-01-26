@@ -18,21 +18,21 @@ export type JobType = {
 
 const Job = ({ name, desc, company, icon }: JobType) => {
   return (
-    <div className="my-3 md:my-5 flex h-auto md:h-[16rem] w-full md:w-[40rem] flex-col justify-between rounded-2xl border px-3 md:px-5 py-3 md:py-4 shadow-md hover:cursor-pointer">
+    <div className="my-3 flex h-auto w-full flex-col justify-between rounded-2xl border px-3 py-3 shadow-md hover:cursor-pointer md:my-5 md:h-[16rem] md:w-[40rem] md:px-5 md:py-4">
       <div>
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="flex flex-1 flex-row justify-between items-start">
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-1 flex-row items-start justify-between">
             <div className="flex flex-row gap-2">
               <Image
                 src={icon}
                 alt={company}
-                className="rounded-full w-12 h-12 md:w-[50px] md:h-[50px]"
+                className="h-12 w-12 rounded-full md:h-[50px] md:w-[50px]"
                 height={50}
                 width={50}
               />
               <div className="flex flex-col items-start">
-                <h1 className="text-lg md:text-xl font-bold">{name}</h1>
-                <h2 className="text-sm md:text-base font-normal text-muted-foreground">
+                <h1 className="text-lg font-bold md:text-xl">{name}</h1>
+                <h2 className="text-sm font-normal text-muted-foreground md:text-base">
                   {company}
                 </h2>
               </div>
@@ -62,15 +62,17 @@ const Job = ({ name, desc, company, icon }: JobType) => {
         </div>
         <Separator className="my-2" />
         <div>
-          <p className="text-sm md:text-base font-light">{desc}</p>
+          <p className="text-sm font-light md:text-base">{desc}</p>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mt-3 md:mt-0">
-        <p className="text-xs md:text-sm font-light text-muted-foreground">
+      <div className="mt-3 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0 md:mt-0">
+        <p className="text-xs font-light text-muted-foreground md:text-sm">
           148k+ have applied
         </p>
-        <div className="flex flex-row items-end justify-end gap-2 md:gap-3 w-full sm:w-auto">
-          <Button variant={"link"} className="text-sm md:text-base">Contact</Button>
+        <div className="flex w-full flex-row items-end justify-end gap-2 sm:w-auto md:gap-3">
+          <Button variant={"link"} className="text-sm md:text-base">
+            Contact
+          </Button>
           <Button className="text-sm md:text-base">Apply</Button>
         </div>
       </div>

@@ -35,6 +35,7 @@ import { ModeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 import { Menu, User } from "lucide-react";
 import { type Session } from "next-auth";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import Icon from "./Icon";
@@ -148,8 +149,18 @@ export function Navbar({ session }: { session: Session | null }) {
                 {session ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <User className="h-5 w-5" />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="outline-none focus:outline-none"
+                      >
+                        <Image
+                          width={30}
+                          height={30}
+                          src={session.user.image ?? ""}
+                          alt={session.user.name ?? "Avatar"}
+                          className="rounded-full outline-none"
+                        />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
