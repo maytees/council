@@ -377,9 +377,9 @@ const Onboarding = () => {
             animate="visible"
             exit="hidden"
             transition={{ duration: 0.2 }}
-            className="flex flex-col gap-6"
+            className="flex flex-col"
           >
-            <div className="space-y-3">
+            <div className="space-y-0">
               <Label htmlFor="location" className="text-lg">
                 Location
               </Label>
@@ -497,10 +497,16 @@ const Onboarding = () => {
                   setFormData({ ...formData, schoolCode: upperValue });
                   setErrors({ ...errors, schoolCode: "" });
                 }}
+                disabled={formData.userType === "COUNSELOR"}
                 placeholder="Enter your school code"
                 className="text-lg"
                 maxLength={6}
               />
+              <p className="text-sm font-light text-muted-foreground">
+                {formData.userType === "STUDENT"
+                  ? "Ask your counselor for your school code."
+                  : "Give this code to students in your school upon registration."}
+              </p>
               {errors.schoolCode && (
                 <p className="text-sm text-red-500">{errors.schoolCode}</p>
               )}
@@ -571,7 +577,7 @@ const Onboarding = () => {
               className="text-lg"
             >
               {currentStep === steps.length - 1 ||
-                (currentStep === 2 && formData.userType === "COMPANY")
+              (currentStep === 2 && formData.userType === "COMPANY")
                 ? "Complete"
                 : "Next"}
             </Button>

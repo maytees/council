@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -136,8 +136,8 @@ export default function AnimatedGridPattern({
             key={`${x}-${y}-${index}`}
             width={width - 1}
             height={height - 1}
-            x={x * width + 1}
-            y={y * height + 1}
+            x={x ?? 1 * width + 1}
+            y={y ?? 1 * height + 1}
             fill="currentColor"
             strokeWidth="0"
           />

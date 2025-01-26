@@ -10,7 +10,7 @@ export default function Icon(props: { className?: string }) {
       className={cn("size-10", props.className)}
     >
       <foreignObject width="100%" height="100%" x="0" y="0">
-        <div xmlns="http://www.w3.org/1999/xhtml" className="aspect-square">
+        <div className="aspect-square">
           <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[300px] bg-primary">
             <span className="h-[380px] w-[380px]">
               <svg
