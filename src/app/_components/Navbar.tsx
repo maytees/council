@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
-import { Menu, User } from "lucide-react";
+import { Menu } from "lucide-react";
 import { type Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -157,7 +157,7 @@ export function Navbar({ session }: { session: Session | null }) {
                         <Image
                           width={30}
                           height={30}
-                          src={session.user.image ?? ""}
+                          src={session.user.image ?? "/defaulticon.jpg"}
                           alt={session.user.name ?? "Avatar"}
                           className="rounded-full outline-none"
                         />
@@ -176,7 +176,7 @@ export function Navbar({ session }: { session: Session | null }) {
                         <Link href="/dashboard">Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                         <Link href="/auth/signout">Logout</Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -198,7 +198,13 @@ export function Navbar({ session }: { session: Session | null }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
+                  <Image
+                    width={30}
+                    height={30}
+                    src={session.user.image ?? "/defaulticon.jpg"}
+                    alt={session.user.name ?? "Avatar"}
+                    className="rounded-full outline-none"
+                  />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -214,8 +220,8 @@ export function Navbar({ session }: { session: Session | null }) {
                   <Link href="/dashboard">Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href={"/auth/signout"}>Logout</Link>
+                <DropdownMenuItem asChild>
+                  <Link href="/auth/signout">Logout</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

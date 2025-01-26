@@ -38,8 +38,9 @@ export const authConfig = {
     Resend({
       from: "Roport.dev <no-reply@roport.dev>",
       async sendVerificationRequest(params) {
-        const { identifier: to, provider, url, theme } = params;
-        const { host } = new URL(url);
+        // const { identifier: to, provider, url, theme } = params;
+        // const { host } = new URL(url);
+        const { identifier: to, provider, url } = params;
         const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {

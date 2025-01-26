@@ -27,13 +27,18 @@ const steps = [
   },
   {
     id: "basic-info",
-    title: "Basic Information", 
+    title: "Basic Information",
     description: "Tell us a bit about yourself",
   },
   {
     id: "additional-info",
     title: "Additional Details",
     description: "Help us personalize your experience",
+  },
+  {
+    id: "school-code",
+    title: "School Code",
+    description: "Enter your school join code",
   },
 ];
 
@@ -51,9 +56,10 @@ const Onboarding = () => {
     skills: "",
     experience: "",
     education: "",
-    isNewSchool: false
+    isNewSchool: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [schoolJoinCode, setSchoolJoinCode] = useState<string>("");
 
   const updateProfile = api.profile.update.useMutation({
     onSuccess: () => {
@@ -61,7 +67,28 @@ const Onboarding = () => {
     },
   });
 
-  const validateStep = () => {
+  const verifySchoolCode = api.profile.verifySchoolCode.useMutation({
+    onError: (_) => {
+      setErrors({ ...errors, schoolCode: "Invalid school code" });
+    },
+  });
+
+  const joinSchool = api.school.join.useMutation({
+    onError: (_) => {
+      setErrors({ ...errors, schoolCode: "Invalid school code" });
+    },
+  });
+
+  const createSchool = api.school.create.useMutation({
+    onSuccess: (data) => {
+      setSchoolJoinCode(data.joinCode);
+    },
+    onError: (error) => {
+      setErrors({ ...errors, school: error.message });
+    },
+  });
+
+  const validateStep = async () => {
     const newErrors: Record<string, string> = {};
 
     switch (currentStep) {
@@ -76,17 +103,24 @@ const Onboarding = () => {
         } else if (formData.bio.length > MAX_BIO_LENGTH) {
           newErrors.bio = `Bio must be ${MAX_BIO_LENGTH} characters or less`;
         }
-        if (formData.userType === "STUDENT") {
-          if (!formData.schoolCode.trim()) {
-            newErrors.schoolCode = "School code is required";
-          }
-        }
-        if (formData.userType === "COUNSELOR") {
-          if (!formData.schoolCode.trim() && !formData.school.trim()) {
-            newErrors.schoolCode = "Either school code or new school name is required";
-          }
-          if (formData.school.trim() && formData.school.length > MAX_SCHOOL_LENGTH) {
+        if (formData.userType === "COUNSELOR" && formData.school.trim()) {
+          if (formData.school.length > MAX_SCHOOL_LENGTH) {
             newErrors.school = `School name must be ${MAX_SCHOOL_LENGTH} characters or less`;
+          } else {
+            try {
+              const result = await createSchool.mutateAsync({
+                name: formData.school,
+                location: formData.location || "Unknown",
+              });
+              setFormData({
+                ...formData,
+                schoolCode: result.joinCode,
+                userType: formData.userType,
+              });
+            } catch (error) {
+              console.error(error);
+              return false;
+            }
           }
         }
         if (formData.userType === "COMPANY") {
@@ -124,19 +158,39 @@ const Onboarding = () => {
           newErrors.education = `Education must be ${MAX_EDUCATION_LENGTH} characters or less`;
         }
         break;
+      case 3:
+        if (
+          (formData.userType === "STUDENT" ||
+            formData.userType === "COUNSELOR") &&
+          !formData.schoolCode.trim()
+        ) {
+          newErrors.schoolCode = "School code is required";
+        } else if (formData.schoolCode.trim()) {
+          try {
+            await verifySchoolCode.mutateAsync({
+              schoolCode: formData.schoolCode,
+            });
+            await joinSchool.mutateAsync({
+              joinCode: formData.schoolCode,
+              userType: formData.userType,
+            });
+          } catch (error) {
+            console.error(error);
+            return false;
+          }
+        }
+        break;
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  const handleSubmit = () => {
-    if (validateStep()) {
+  const handleSubmit = async () => {
+    if (await validateStep()) {
       updateProfile.mutate({
-        userType: formData.userType as "STUDENT" | "COUNSELOR" | "COMPANY",
+        userType: formData.userType as "STUDENT" | "COMPANY" | "COUNSELOR",
         bio: formData.bio,
         schoolCode: formData.schoolCode,
-        school: formData.school,
         position: formData.position,
         company: formData.company,
         location: formData.location,
@@ -149,7 +203,7 @@ const Onboarding = () => {
 
   const fadeVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: { opacity: 1 },
   };
 
   const renderStep = () => {
@@ -174,15 +228,21 @@ const Onboarding = () => {
             >
               <div className="flex items-center space-x-3">
                 <RadioGroupItem value="STUDENT" id="student" />
-                <Label htmlFor="student" className="text-lg">Student</Label>
+                <Label htmlFor="student" className="text-lg">
+                  Student
+                </Label>
               </div>
               <div className="flex items-center space-x-3">
                 <RadioGroupItem value="COUNSELOR" id="counselor" />
-                <Label htmlFor="counselor" className="text-lg">Counselor</Label>
+                <Label htmlFor="counselor" className="text-lg">
+                  Counselor
+                </Label>
               </div>
               <div className="flex items-center space-x-3">
                 <RadioGroupItem value="COMPANY" id="company" />
-                <Label htmlFor="company" className="text-lg">Company</Label>
+                <Label htmlFor="company" className="text-lg">
+                  Company
+                </Label>
               </div>
             </RadioGroup>
             {errors.userType && (
@@ -203,7 +263,9 @@ const Onboarding = () => {
             className="flex flex-col gap-6"
           >
             <div className="space-y-3">
-              <Label htmlFor="bio" className="text-lg">Bio</Label>
+              <Label htmlFor="bio" className="text-lg">
+                Bio
+              </Label>
               <Textarea
                 id="bio"
                 value={formData.bio}
@@ -223,94 +285,44 @@ const Onboarding = () => {
               )}
             </div>
 
-            {formData.userType === "STUDENT" && (
-              <div className="space-y-3">
-                <Label htmlFor="schoolCode" className="text-lg">School Code</Label>
-                <Input
-                  id="schoolCode"
-                  value={formData.schoolCode}
-                  onChange={(e) => {
-                    setFormData({ ...formData, schoolCode: e.target.value });
-                    setErrors({ ...errors, schoolCode: "" });
-                  }}
-                  placeholder="Enter your school code"
-                  className="text-lg"
-                />
-                {errors.schoolCode && (
-                  <p className="text-sm text-red-500">{errors.schoolCode}</p>
-                )}
-              </div>
-            )}
-
             {formData.userType === "COUNSELOR" && (
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <Label htmlFor="schoolCode" className="text-lg">School Code</Label>
+                  <Label htmlFor="school" className="text-lg">
+                    School Name (Optional)
+                  </Label>
                   <Input
-                    id="schoolCode"
-                    value={formData.schoolCode}
+                    id="school"
+                    value={formData.school}
                     onChange={(e) => {
-                      setFormData({ 
-                        ...formData, 
-                        schoolCode: e.target.value,
-                        isNewSchool: false 
-                      });
-                      setErrors({ ...errors, schoolCode: "" });
+                      setFormData({ ...formData, school: e.target.value });
+                      setErrors({ ...errors, school: "" });
                     }}
-                    placeholder="Enter existing school code"
+                    placeholder="Enter new school name"
                     className="text-lg"
-                    disabled={formData.isNewSchool}
+                    maxLength={MAX_SCHOOL_LENGTH}
                   />
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="newSchool"
-                    checked={formData.isNewSchool}
-                    onChange={(e) => {
-                      setFormData({ 
-                        ...formData, 
-                        isNewSchool: e.target.checked,
-                        schoolCode: e.target.checked ? "" : formData.schoolCode 
-                      });
-                    }}
-                  />
-                  <Label htmlFor="newSchool">Register new school</Label>
-                </div>
-
-                {formData.isNewSchool && (
-                  <div className="space-y-3">
-                    <Label htmlFor="school" className="text-lg">School Name</Label>
-                    <Input
-                      id="school"
-                      value={formData.school}
-                      onChange={(e) => {
-                        setFormData({ ...formData, school: e.target.value });
-                        setErrors({ ...errors, school: "" });
-                      }}
-                      placeholder="Enter new school name"
-                      className="text-lg"
-                      maxLength={MAX_SCHOOL_LENGTH}
-                    />
-                    <div className="flex justify-end text-sm text-muted-foreground">
-                      {formData.school.length}/{MAX_SCHOOL_LENGTH}
-                    </div>
+                  <div className="flex justify-end text-sm text-muted-foreground">
+                    {formData.school.length}/{MAX_SCHOOL_LENGTH}
                   </div>
-                )}
-                {errors.schoolCode && (
-                  <p className="text-sm text-red-500">{errors.schoolCode}</p>
-                )}
-                {errors.school && (
-                  <p className="text-sm text-red-500">{errors.school}</p>
-                )}
+                  {errors.school && (
+                    <p className="text-sm text-red-500">{errors.school}</p>
+                  )}
+                  {schoolJoinCode && (
+                    <p className="mt-2 text-sm text-green-500">
+                      School created successfully! Join code: {schoolJoinCode}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
             {formData.userType === "COMPANY" && (
               <>
                 <div className="space-y-3">
-                  <Label htmlFor="company" className="text-lg">Company Name</Label>
+                  <Label htmlFor="company" className="text-lg">
+                    Company Name
+                  </Label>
                   <Input
                     id="company"
                     value={formData.company}
@@ -330,7 +342,9 @@ const Onboarding = () => {
                   )}
                 </div>
                 <div className="space-y-3">
-                  <Label htmlFor="position" className="text-lg">Position</Label>
+                  <Label htmlFor="position" className="text-lg">
+                    Position
+                  </Label>
                   <Input
                     id="position"
                     value={formData.position}
@@ -366,7 +380,9 @@ const Onboarding = () => {
             className="flex flex-col gap-6"
           >
             <div className="space-y-3">
-              <Label htmlFor="location" className="text-lg">Location</Label>
+              <Label htmlFor="location" className="text-lg">
+                Location
+              </Label>
               <Input
                 id="location"
                 value={formData.location}
@@ -387,7 +403,9 @@ const Onboarding = () => {
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="skills" className="text-lg">Skills</Label>
+              <Label htmlFor="skills" className="text-lg">
+                Skills
+              </Label>
               <Input
                 id="skills"
                 value={formData.skills}
@@ -408,7 +426,9 @@ const Onboarding = () => {
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="experience" className="text-lg">Experience</Label>
+              <Label htmlFor="experience" className="text-lg">
+                Experience
+              </Label>
               <Input
                 id="experience"
                 value={formData.experience}
@@ -429,7 +449,9 @@ const Onboarding = () => {
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="education" className="text-lg">Education</Label>
+              <Label htmlFor="education" className="text-lg">
+                Education
+              </Label>
               <Input
                 id="education"
                 value={formData.education}
@@ -450,11 +472,55 @@ const Onboarding = () => {
             </div>
           </motion.div>
         );
+
+      case 3:
+        return formData.userType === "STUDENT" ||
+          formData.userType === "COUNSELOR" ? (
+          <motion.div
+            key="step-3"
+            variants={fadeVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            transition={{ duration: 0.2 }}
+            className="flex flex-col gap-6"
+          >
+            <div className="space-y-3">
+              <Label htmlFor="schoolCode" className="text-lg">
+                School Code
+              </Label>
+              <Input
+                id="schoolCode"
+                value={formData.schoolCode}
+                onChange={(e) => {
+                  const upperValue = e.target.value.toUpperCase();
+                  setFormData({ ...formData, schoolCode: upperValue });
+                  setErrors({ ...errors, schoolCode: "" });
+                }}
+                placeholder="Enter your school code"
+                className="text-lg"
+                maxLength={6}
+              />
+              {errors.schoolCode && (
+                <p className="text-sm text-red-500">{errors.schoolCode}</p>
+              )}
+            </div>
+          </motion.div>
+        ) : null;
     }
   };
 
+  const shouldShowStep = (step: number) => {
+    if (step === 3) {
+      return (
+        formData.userType === "STUDENT" || formData.userType === "COUNSELOR"
+      );
+    }
+    return true;
+  };
+
   return (
-    <div className="flex min-h-[92vh] max-w-7xl justify-center mx-auto px-6 items-center">
+    <div className="mx-auto flex min-h-[92vh] max-w-7xl items-center justify-center px-6">
       <div className="w-full max-w-4xl px-6 py-12">
         <motion.div
           initial={{ opacity: 0 }}
@@ -483,18 +549,31 @@ const Onboarding = () => {
             </Button>
 
             <Button
-              onClick={() => {
-                if (validateStep()) {
-                  if (currentStep === steps.length - 1) {
-                    handleSubmit();
+              onClick={async () => {
+                if (await validateStep()) {
+                  if (
+                    currentStep === steps.length - 1 ||
+                    (currentStep === 2 && formData.userType === "COMPANY")
+                  ) {
+                    await handleSubmit();
                   } else {
-                    setCurrentStep((prev) => prev + 1);
+                    let nextStep = currentStep + 1;
+                    while (
+                      nextStep < steps.length &&
+                      !shouldShowStep(nextStep)
+                    ) {
+                      nextStep++;
+                    }
+                    setCurrentStep(nextStep);
                   }
                 }
               }}
               className="text-lg"
             >
-              {currentStep === steps.length - 1 ? "Complete" : "Next"}
+              {currentStep === steps.length - 1 ||
+                (currentStep === 2 && formData.userType === "COMPANY")
+                ? "Complete"
+                : "Next"}
             </Button>
           </div>
         </motion.div>

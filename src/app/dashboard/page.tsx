@@ -60,7 +60,7 @@ export default async function DashboardPage() {
               className="h-20 w-20 rounded-full"
               width={80}
               height={80}
-              src={user.image ?? ""}
+              src={user.image ?? "/defaulticon.jpg"}
               alt={user.name ?? session.user.id}
             />
 
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
           <Separator className="my-4" />
           <div className="flex flex-col gap-2">
             <p className="text-sm text-muted-foreground">About</p>
-            <p className="text-sm">{user.bio || "No bio provided"}</p>
+            <p className="text-sm">{user.bio ?? "No bio provided"}</p>
             {user.location && (
               <p className="text-sm text-muted-foreground">
                 📍 {user.location}

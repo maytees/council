@@ -26,6 +26,19 @@ model Post {
     @@index([name])
 }
 
+model School {
+    id        String   @id @default(cuid())
+    name      String
+    location  String
+    joinCode  String   @unique
+    createdAt DateTime @default(now())
+
+    owner      User   @relation("SchoolOwner", fields: [ownerId], references: [id])
+    ownerId    String @unique
+    counselors User[] @relation("SchoolCounselors")
+    students   User[] @relation("SchoolStudents")
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -65,17 +78,22 @@ model User {
     posts         Post[]
 
     // Profile fields
-    userType      String?   // "STUDENT" | "COUNSELOR" | "COMPANY"
-    bio           String?
-    schoolCode    String?   // For counselors to set their school code
-    school        String?   // For students to indicate their school
-    position      String?   // Job title or position
-    company       String?   // Company name for company users
-    location      String?   // Location
-    skills        String?   // Comma-separated list of skills
-    experience    String?   // Years of experience
-    education     String?   // Education details
+    userType         String? // "STUDENT" | "COUNSELOR" | "COMPANY"
+    bio              String?
+    schoolCode       String? // For counselors to set their school code
+    school           String? // For students to indicate their school
+    position         String? // Job title or position
+    company          String? // Company name for company users
+    location         String? // Location
+    skills           String? // Comma-separated list of skills
+    experience       String? // Years of experience
+    education        String? // Education details
     profileCompleted Boolean @default(false)
+
+    // School relations
+    ownedSchool School?  @relation("SchoolOwner")
+    counselorAt School[] @relation("SchoolCounselors")
+    studentAt   School[] @relation("SchoolStudents")
 }
 
 model VerificationToken {
