@@ -83,8 +83,8 @@ export function Navbar({ session }: { session: Session | null }) {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              {/* Employers - Only show if user is COMPANY */}
-              {user?.userType === "COMPANY" && (
+              {/* Employers - Show if user is COMPANY or not logged in */}
+              {(!session || user?.userType === "COMPANY") && (
                 <NavigationMenuItem className="z-50">
                   <NavigationMenuTrigger className="z-50">
                     For Employers
@@ -108,8 +108,8 @@ export function Navbar({ session }: { session: Session | null }) {
                 </NavigationMenuItem>
               )}
 
-              {/* Students - Only show if user is STUDENT */}
-              {user?.userType === "STUDENT" && (
+              {/* Students - Show if user is STUDENT or not logged in */}
+              {(!session || user?.userType === "STUDENT") && (
                 <NavigationMenuItem className="z-50">
                   <NavigationMenuTrigger className="z-50">
                     For Students
@@ -133,8 +133,8 @@ export function Navbar({ session }: { session: Session | null }) {
                 </NavigationMenuItem>
               )}
 
-              {/* Counselors - Only show if user is COUNSELOR */}
-              {user?.userType === "COUNSELOR" && (
+              {/* Counselors - Show if user is COUNSELOR or not logged in */}
+              {(!session || user?.userType === "COUNSELOR") && (
                 <NavigationMenuItem className="z-50">
                   <NavigationMenuTrigger className="z-50">
                     For Counselors
@@ -297,8 +297,8 @@ export function Navbar({ session }: { session: Session | null }) {
                     </AccordionContent>
                   </AccordionItem>
 
-                  {/* Employers - Only show if user is COMPANY */}
-                  {user?.userType === "COMPANY" && (
+                  {/* Employers - Show if user is COMPANY or not logged in */}
+                  {(!session || user?.userType === "COMPANY") && (
                     <AccordionItem value="employers" className="z-50">
                       <AccordionTrigger>For Employers</AccordionTrigger>
                       <AccordionContent>
@@ -332,8 +332,8 @@ export function Navbar({ session }: { session: Session | null }) {
                     </AccordionItem>
                   )}
 
-                  {/* Students - Only show if user is STUDENT */}
-                  {user?.userType === "STUDENT" && (
+                  {/* Students - Show if user is STUDENT or not logged in */}
+                  {(!session || user?.userType === "STUDENT") && (
                     <AccordionItem value="students" className="z-50">
                       <AccordionTrigger>For Students</AccordionTrigger>
                       <AccordionContent>
@@ -367,8 +367,8 @@ export function Navbar({ session }: { session: Session | null }) {
                     </AccordionItem>
                   )}
 
-                  {/* Counselors - Only show if user is COUNSELOR */}
-                  {user?.userType === "COUNSELOR" && (
+                  {/* Counselors - Show if user is COUNSELOR or not logged in */}
+                  {(!session || user?.userType === "COUNSELOR") && (
                     <AccordionItem value="counselors" className="z-50">
                       <AccordionTrigger>For Counselors</AccordionTrigger>
                       <AccordionContent>
