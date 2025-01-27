@@ -9,34 +9,6 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import JobPosts from "../_components/dashboard/JobPosts";
 
-const googleDesc = `
-Google is seeking talented Software Engineering interns to join our dynamic teams in developing
-innovative solutions that impact billions of users worldwide. You'll collaborate with world-class
-engineers on real projects while gaining hands-on experience with our cutting-edge technologies
-and agile development practices.
-`;
-
-const amazonDesc = `
-Amazon is looking for innovative Software Development Engineer interns to help build the future of
-technology. You'll work on large-scale systems that power Amazon's global infrastructure, gaining
-invaluable experience in distributed systems, cloud computing, and agile methodologies while
-working alongside industry leaders.
-`;
-
-const robloxDesc = `
-Join Roblox as a Software Engineering intern and help shape the future of gaming and social
-interaction. You'll work on cutting-edge technology that enables millions of users to connect,
-create, and share experiences in our immersive platform while learning about game development,
-scalable systems, and modern software architecture.
-`;
-
-const accentureDesc = `
-Accenture is seeking motivated Software Engineering interns to join our technology consulting
-practice. You'll work with diverse clients across industries, helping solve complex business
-challenges through innovative technical solutions while gaining exposure to emerging technologies
-and professional consulting skills.
-`;
-
 export default async function DashboardPage() {
   const session = await auth();
 
@@ -49,6 +21,26 @@ export default async function DashboardPage() {
   if (!user?.profileCompleted) {
     redirect("/profile/onboarding");
   }
+
+  // Get the user's school ID if they are a student or counselor
+  let schoolId = "";
+  if (user.userType === "STUDENT" && user.studentAt?.[0]) {
+    schoolId = user.studentAt[0].id;
+  } else if (user.userType === "COUNSELOR" && user.counselorAt?.[0]) {
+    schoolId = user.counselorAt[0].id;
+  }
+
+  // Fetch approved jobs for the user's school
+  const jobs = schoolId ? await api.jobs.getAll({ schoolId }) : [];
+
+  const formattedJobs = jobs.map((job) => ({
+    id: job.id,
+    name: job.name,
+    desc: job.desc,
+    applicationUrl: job.applicationUrl,
+    company: job.company.name,
+    icon: job.company.logo ?? "/defaulticon.jpg",
+  }));
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-6 lg:h-screen lg:flex-row">
@@ -63,11 +55,6 @@ export default async function DashboardPage() {
               src={session.user.image ?? "/defaulticon.jpg"}
               alt={session.user.name ?? session.user.id}
             />
-
-            {/* <Avatar className="h-20 w-20">
-              <AvatarImage src={user.image ?? ""} alt="profile" />
-              <AvatarFallback>{user.name?.[0] ?? "U"}</AvatarFallback>
-            </Avatar> */}
             <div className="text-center">
               <h2 className="text-xl font-bold">{user.name}</h2>
               <p className="text-sm text-muted-foreground">
@@ -124,40 +111,9 @@ export default async function DashboardPage() {
       {/* Main Content */}
       <div className="flex-1">
         <JobPosts
-          jobs={[
-            {
-              company: "Google",
-              desc: googleDesc,
-              name: "Software Engineer Intern - Summer 2025",
-              icon: "/googlelogo.jpg",
-              id: "asdffff",
-              applicationUrl: "https://google.com/jobs"
-            },
-            {
-              company: "Amazon",
-              desc: amazonDesc,
-              name: "Software Development Engineer Intern - Summer 2025",
-              icon: "/amazonlogo.webp",
-              id: "asdfff",
-              applicationUrl: "https://amazon.com/jobs"
-            },
-            {
-              company: "Roblox",
-              desc: robloxDesc,
-              name: "Software Engineering Intern - Summer 2025",
-              icon: "/robloxlogo.webp",
-              id: "asdff",
-              applicationUrl: "https://roblox.com/jobs"
-            },
-            {
-              company: "Accenture",
-              desc: accentureDesc,
-              name: "Technology Consulting Intern - Summer 2025",
-              icon: "/accenturelogo.png",
-              id: "asdf",
-              applicationUrl: "https://accenture.com/jobs"
-            },
-          ]}
+          headerText={user.userType === "COMPANY" ? "Your Job Listings" : "Available Jobs"}
+          jobs={formattedJobs}
+          showDelete={user.userType === "COMPANY"}
         />
       </div>
 

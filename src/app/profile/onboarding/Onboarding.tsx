@@ -77,14 +77,9 @@ const Onboarding = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [schoolJoinCode, setSchoolJoinCode] = useState<string>("");
+  // const utils = api.useUtils();
 
   const updateProfile = api.profile.update.useMutation({
-    onSuccess: () => {
-      router.push("/dashboard");
-    },
-  });
-
-  const updateCompany = api.company.update.useMutation({
     onSuccess: () => {
       router.push("/dashboard");
     },
@@ -245,29 +240,30 @@ const Onboarding = () => {
   };
   const handleSubmit = async () => {
     if (await validateStep()) {
-      if (formData.userType === "COMPANY") {
-        updateCompany.mutate({
-          name: formData.company,
-          description: formData.description,
-          website: formData.website,
-          industry: formData.industry,
-          size: formData.size,
-          founded: formData.founded ? parseInt(formData.founded) : undefined,
+      try {
+        await updateProfile.mutateAsync({
+          userType: formData.userType as "STUDENT" | "COMPANY" | "COUNSELOR",
+          bio: formData.bio,
+          schoolCode: formData.schoolCode,
+          position: formData.position,
+          company: formData.company,
           location: formData.location,
+          skills: formData.skills,
+          experience: formData.experience,
+          education: formData.education,
+          // Add company-specific fields when userType is COMPANY
+          ...(formData.userType === "COMPANY" && {
+            description: formData.description,
+            website: formData.website,
+            industry: formData.industry,
+            size: formData.size,
+            founded: formData.founded,
+          }),
         });
+      } catch (error) {
+        console.error('Profile update failed:', error);
+        setErrors(prev => ({ ...prev, submit: "Failed to update profile information" }));
       }
-
-      updateProfile.mutate({
-        userType: formData.userType as "STUDENT" | "COMPANY" | "COUNSELOR",
-        bio: formData.bio,
-        schoolCode: formData.schoolCode,
-        position: formData.position,
-        company: formData.company,
-        location: formData.location,
-        skills: formData.skills,
-        experience: formData.experience,
-        education: formData.education,
-      });
     }
   };
 
