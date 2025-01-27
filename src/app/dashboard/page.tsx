@@ -60,8 +60,8 @@ export default async function DashboardPage() {
               className="h-20 w-20 rounded-full"
               width={80}
               height={80}
-              src={user.image ?? "/defaulticon.jpg"}
-              alt={user.name ?? session.user.id}
+              src={session.user.image ?? "/defaulticon.jpg"}
+              alt={session.user.name ?? session.user.id}
             />
 
             {/* <Avatar className="h-20 w-20">
@@ -72,7 +72,7 @@ export default async function DashboardPage() {
               <h2 className="text-xl font-bold">{user.name}</h2>
               <p className="text-sm text-muted-foreground">
                 {user.userType === "COMPANY"
-                  ? `${user.position} at ${user.company}`
+                  ? `${user.position} at ${user.company?.name}`
                   : user.userType === "COUNSELOR"
                     ? `Counselor at ${user.school}`
                     : `Student at ${user.school}`}
@@ -130,24 +130,32 @@ export default async function DashboardPage() {
               desc: googleDesc,
               name: "Software Engineer Intern - Summer 2025",
               icon: "/googlelogo.jpg",
+              id: "asdffff",
+              applicationUrl: "https://google.com/jobs"
             },
             {
               company: "Amazon",
               desc: amazonDesc,
               name: "Software Development Engineer Intern - Summer 2025",
               icon: "/amazonlogo.webp",
+              id: "asdfff",
+              applicationUrl: "https://amazon.com/jobs"
             },
             {
               company: "Roblox",
               desc: robloxDesc,
               name: "Software Engineering Intern - Summer 2025",
               icon: "/robloxlogo.webp",
+              id: "asdff",
+              applicationUrl: "https://roblox.com/jobs"
             },
             {
               company: "Accenture",
               desc: accentureDesc,
               name: "Technology Consulting Intern - Summer 2025",
               icon: "/accenturelogo.png",
+              id: "asdf",
+              applicationUrl: "https://accenture.com/jobs"
             },
           ]}
         />

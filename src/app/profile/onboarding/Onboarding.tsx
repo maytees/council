@@ -10,14 +10,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+// User related constants
 const MAX_BIO_LENGTH = 500;
-const MAX_SCHOOL_LENGTH = 100;
-const MAX_COMPANY_LENGTH = 100;
 const MAX_POSITION_LENGTH = 100;
 const MAX_LOCATION_LENGTH = 100;
 const MAX_SKILLS_LENGTH = 200;
 const MAX_EXPERIENCE_LENGTH = 50;
 const MAX_EDUCATION_LENGTH = 200;
+const MAX_SCHOOL_LENGTH = 100;
+
+// Company related constants
+const MAX_COMPANY_LENGTH = 100;
+const MAX_DESCRIPTION_LENGTH = 1000;
+const MAX_WEBSITE_LENGTH = 200;
+const MAX_INDUSTRY_LENGTH = 100;
+const MAX_SIZE_LENGTH = 50;
 
 const steps = [
   {
@@ -46,22 +53,38 @@ const Onboarding = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
+    // User information
     userType: "",
     bio: "",
-    schoolCode: "",
-    school: "",
     position: "",
-    company: "",
     location: "",
     skills: "",
     experience: "",
     education: "",
+
+    // School related
+    schoolCode: "",
+    school: "",
     isNewSchool: false,
+
+    // Company information
+    company: "",
+    description: "",
+    website: "",
+    industry: "",
+    size: "",
+    founded: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [schoolJoinCode, setSchoolJoinCode] = useState<string>("");
 
   const updateProfile = api.profile.update.useMutation({
+    onSuccess: () => {
+      router.push("/dashboard");
+    },
+  });
+
+  const updateCompany = api.company.update.useMutation({
     onSuccess: () => {
       router.push("/dashboard");
     },
@@ -88,6 +111,16 @@ const Onboarding = () => {
     },
   });
 
+  const isValidUrl = (string: string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
   const validateStep = async () => {
     const newErrors: Record<string, string> = {};
 
@@ -102,6 +135,11 @@ const Onboarding = () => {
           newErrors.bio = "Bio is required";
         } else if (formData.bio.length > MAX_BIO_LENGTH) {
           newErrors.bio = `Bio must be ${MAX_BIO_LENGTH} characters or less`;
+        }
+        if (!formData.position.trim()) {
+          newErrors.position = "Position is required";
+        } else if (formData.position.length > MAX_POSITION_LENGTH) {
+          newErrors.position = `Position must be ${MAX_POSITION_LENGTH} characters or less`;
         }
         if (formData.userType === "COUNSELOR" && formData.school.trim()) {
           if (formData.school.length > MAX_SCHOOL_LENGTH) {
@@ -129,10 +167,30 @@ const Onboarding = () => {
           } else if (formData.company.length > MAX_COMPANY_LENGTH) {
             newErrors.company = `Company name must be ${MAX_COMPANY_LENGTH} characters or less`;
           }
-          if (!formData.position.trim()) {
-            newErrors.position = "Position is required";
-          } else if (formData.position.length > MAX_POSITION_LENGTH) {
-            newErrors.position = `Position must be ${MAX_POSITION_LENGTH} characters or less`;
+          if (!formData.description.trim()) {
+            newErrors.description = "Company description is required";
+          } else if (formData.description.length > MAX_DESCRIPTION_LENGTH) {
+            newErrors.description = `Description must be ${MAX_DESCRIPTION_LENGTH} characters or less`;
+          }
+          if (!formData.industry.trim()) {
+            newErrors.industry = "Industry is required";
+          } else if (formData.industry.length > MAX_INDUSTRY_LENGTH) {
+            newErrors.industry = `Industry must be ${MAX_INDUSTRY_LENGTH} characters or less`;
+          }
+          if (!formData.size.trim()) {
+            newErrors.size = "Company size is required";
+          }
+          if (formData.website && !isValidUrl(formData.website)) {
+            newErrors.website = "Please enter a valid URL";
+          }
+          const foundedYear = parseInt(formData.founded);
+          if (
+            formData.founded &&
+            (isNaN(foundedYear) ||
+              foundedYear < 1800 ||
+              foundedYear > new Date().getFullYear())
+          ) {
+            newErrors.founded = "Please enter a valid founding year";
           }
         }
         break;
@@ -187,6 +245,18 @@ const Onboarding = () => {
   };
   const handleSubmit = async () => {
     if (await validateStep()) {
+      if (formData.userType === "COMPANY") {
+        updateCompany.mutate({
+          name: formData.company,
+          description: formData.description,
+          website: formData.website,
+          industry: formData.industry,
+          size: formData.size,
+          founded: formData.founded ? parseInt(formData.founded) : undefined,
+          location: formData.location,
+        });
+      }
+
       updateProfile.mutate({
         userType: formData.userType as "STUDENT" | "COMPANY" | "COUNSELOR",
         bio: formData.bio,
@@ -262,7 +332,7 @@ const Onboarding = () => {
             transition={{ duration: 0.2 }}
             className="flex flex-col gap-6"
           >
-            <div className="space-y-3">
+            <div className=" ">
               <Label htmlFor="bio" className="text-lg">
                 Bio
               </Label>
@@ -285,9 +355,32 @@ const Onboarding = () => {
               )}
             </div>
 
+            <div className="">
+              <Label htmlFor="position" className="text-lg">
+                Position
+              </Label>
+              <Input
+                id="position"
+                value={formData.position}
+                onChange={(e) => {
+                  setFormData({ ...formData, position: e.target.value });
+                  setErrors({ ...errors, position: "" });
+                }}
+                placeholder="Your current position"
+                className="text-lg"
+                maxLength={MAX_POSITION_LENGTH}
+              />
+              <div className="flex justify-end text-sm text-muted-foreground">
+                {formData.position.length}/{MAX_POSITION_LENGTH}
+              </div>
+              {errors.position && (
+                <p className="text-sm text-red-500">{errors.position}</p>
+              )}
+            </div>
+
             {formData.userType === "COUNSELOR" && (
               <div className="space-y-6">
-                <div className="space-y-3">
+                <div className=" ">
                   <Label htmlFor="school" className="text-lg">
                     School Name (Optional)
                   </Label>
@@ -318,8 +411,8 @@ const Onboarding = () => {
             )}
 
             {formData.userType === "COMPANY" && (
-              <>
-                <div className="">
+              <div className="space-y-6">
+                <div className=" ">
                   <Label htmlFor="company" className="text-lg">
                     Company Name
                   </Label>
@@ -334,36 +427,113 @@ const Onboarding = () => {
                     className="text-lg"
                     maxLength={MAX_COMPANY_LENGTH}
                   />
-                  <div className="flex justify-end text-sm text-muted-foreground">
-                    {formData.company.length}/{MAX_COMPANY_LENGTH}
-                  </div>
                   {errors.company && (
                     <p className="text-sm text-red-500">{errors.company}</p>
                   )}
                 </div>
-                <div className="">
-                  <Label htmlFor="position" className="text-lg">
-                    Position
+
+                <div className=" ">
+                  <Label htmlFor="description" className="text-lg">
+                    Company Description
                   </Label>
-                  <Input
-                    id="position"
-                    value={formData.position}
+                  <Textarea
+                    id="description"
+                    value={formData.description}
                     onChange={(e) => {
-                      setFormData({ ...formData, position: e.target.value });
-                      setErrors({ ...errors, position: "" });
+                      setFormData({ ...formData, description: e.target.value });
+                      setErrors({ ...errors, description: "" });
                     }}
-                    placeholder="Your position"
-                    className="text-lg"
-                    maxLength={MAX_POSITION_LENGTH}
+                    placeholder="Describe your company..."
+                    className="min-h-[120px] text-lg"
+                    maxLength={MAX_DESCRIPTION_LENGTH}
                   />
-                  <div className="flex justify-end text-sm text-muted-foreground">
-                    {formData.position.length}/{MAX_POSITION_LENGTH}
-                  </div>
-                  {errors.position && (
-                    <p className="text-sm text-red-500">{errors.position}</p>
+                  {errors.description && (
+                    <p className="text-sm text-red-500">{errors.description}</p>
                   )}
                 </div>
-              </>
+
+                <div className=" ">
+                  <Label htmlFor="website" className="text-lg">
+                    Website (Optional)
+                  </Label>
+                  <Input
+                    id="website"
+                    value={formData.website}
+                    onChange={(e) => {
+                      setFormData({ ...formData, website: e.target.value });
+                      setErrors({ ...errors, website: "" });
+                    }}
+                    placeholder="https://your-company.com"
+                    className="text-lg"
+                    maxLength={MAX_WEBSITE_LENGTH}
+                  />
+                  {errors.website && (
+                    <p className="text-sm text-red-500">{errors.website}</p>
+                  )}
+                </div>
+
+                <div className=" ">
+                  <Label htmlFor="industry" className="text-lg">
+                    Industry
+                  </Label>
+                  <Input
+                    id="industry"
+                    value={formData.industry}
+                    onChange={(e) => {
+                      setFormData({ ...formData, industry: e.target.value });
+                      setErrors({ ...errors, industry: "" });
+                    }}
+                    placeholder="e.g. Technology, Healthcare, Education"
+                    className="text-lg"
+                    maxLength={MAX_INDUSTRY_LENGTH}
+                  />
+                  {errors.industry && (
+                    <p className="text-sm text-red-500">{errors.industry}</p>
+                  )}
+                </div>
+
+                <div className=" ">
+                  <Label htmlFor="size" className="text-lg">
+                    Company Size
+                  </Label>
+                  <Input
+                    id="size"
+                    value={formData.size}
+                    onChange={(e) => {
+                      setFormData({ ...formData, size: e.target.value });
+                      setErrors({ ...errors, size: "" });
+                    }}
+                    placeholder="e.g. 1-10, 11-50, 51-200"
+                    className="text-lg"
+                    maxLength={MAX_SIZE_LENGTH}
+                  />
+                  {errors.size && (
+                    <p className="text-sm text-red-500">{errors.size}</p>
+                  )}
+                </div>
+
+                <div className=" ">
+                  <Label htmlFor="founded" className="text-lg">
+                    Founded Year (Optional)
+                  </Label>
+                  <Input
+                    id="founded"
+                    type="number"
+                    value={formData.founded}
+                    onChange={(e) => {
+                      setFormData({ ...formData, founded: e.target.value });
+                      setErrors({ ...errors, founded: "" });
+                    }}
+                    placeholder="e.g. 2020"
+                    className="text-lg"
+                    min="1800"
+                    max={new Date().getFullYear()}
+                  />
+                  {errors.founded && (
+                    <p className="text-sm text-red-500">{errors.founded}</p>
+                  )}
+                </div>
+              </div>
             )}
           </motion.div>
         );
@@ -402,7 +572,7 @@ const Onboarding = () => {
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className=" ">
               <Label htmlFor="skills" className="text-lg">
                 Skills
               </Label>
@@ -425,7 +595,7 @@ const Onboarding = () => {
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className=" ">
               <Label htmlFor="experience" className="text-lg">
                 Experience
               </Label>
@@ -448,7 +618,7 @@ const Onboarding = () => {
               )}
             </div>
 
-            <div className="space-y-3">
+            <div className=" ">
               <Label htmlFor="education" className="text-lg">
                 Education
               </Label>
@@ -485,7 +655,7 @@ const Onboarding = () => {
             transition={{ duration: 0.2 }}
             className="flex flex-col gap-6"
           >
-            <div className="space-y-3">
+            <div className=" ">
               <Label htmlFor="schoolCode" className="text-lg">
                 School Code
               </Label>
@@ -577,7 +747,7 @@ const Onboarding = () => {
               className="text-lg"
             >
               {currentStep === steps.length - 1 ||
-              (currentStep === 2 && formData.userType === "COMPANY")
+                (currentStep === 2 && formData.userType === "COMPANY")
                 ? "Complete"
                 : "Next"}
             </Button>

@@ -3,9 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
-import Job, { type JobType } from "./Job";
+import Job from "./Job";
 
-const JobPosts = ({ jobs }: { jobs: JobType[] }) => {
+type JobWithCompany = {
+  id: string;
+  name: string;
+  desc: string;
+  applicationUrl: string;
+  company: string;
+  icon: string;
+};
+
+const JobPosts = ({ jobs, headerText }: { jobs: JobWithCompany[], headerText?: string }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredJobs = jobs.filter((job) => {
@@ -21,7 +30,7 @@ const JobPosts = ({ jobs }: { jobs: JobType[] }) => {
     <div className="flex h-[97vh] flex-col items-start px-4 pr-10">
       <div className="flex w-full flex-col items-start justify-between gap-4 md:flex-row md:items-center md:gap-0">
         <h1 className="text-left text-xl font-bold md:text-2xl">
-          Job postings
+          {headerText ?? "Job postings"}
         </h1>
         <Input
           className="w-full md:w-2/3"
@@ -45,13 +54,15 @@ const JobPosts = ({ jobs }: { jobs: JobType[] }) => {
             )}
           </div>
         ) : (
-          filteredJobs.map((job, i) => (
-            <div key={i} className="w-full">
+          filteredJobs.map((job) => (
+            <div key={job.id} className="w-full">
               <Job
+                id={job.id}
                 company={job.company}
                 desc={job.desc}
                 name={job.name}
-                icon={job.icon}
+                icon={job.icon ?? "/defaulticon.jpg"}
+                applicationUrl={job.applicationUrl}
               />
             </div>
           ))
