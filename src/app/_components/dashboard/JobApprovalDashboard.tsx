@@ -36,7 +36,7 @@ const JobApprovalDashboard = ({ schoolId, schoolName }: JobApprovalProps) => {
     const filteredJobs = pendingJobs.filter((job) => {
         const searchText = searchQuery.toLowerCase();
         return (
-            job.desc.toLowerCase().includes(searchText) ||
+            job.shortDesc.toLowerCase().includes(searchText) ||
             job.name.toLowerCase().includes(searchText) ||
             job.company.name.toLowerCase().includes(searchText)
         );
@@ -99,7 +99,7 @@ const JobApprovalDashboard = ({ schoolId, schoolName }: JobApprovalProps) => {
                                     </Button>
                                 </div>
                             </div>
-                            <p className="text-sm">{job.desc}</p>
+                            <p className="text-sm">{job.shortDesc}</p>
                         </div>
                     ))
                 )}

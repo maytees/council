@@ -89,11 +89,11 @@ We may modify these terms at any time. Changes will be effective upon posting to
 
 ## 9. Governing Law
 
-These terms are governed by [State/Country] law, without regard to conflicts of law principles.
+These terms are governed by Virginia law, without regard to conflicts of law principles.
 
 ## 10. Contact Information
 
 For questions about these terms:
 - Email: legal@council.com
-- Mail: [Physical Address]
-- Phone: [Phone Number] 
+- Mail: XYZ Street
+- Phone: 123-456-7890

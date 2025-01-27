@@ -8,7 +8,7 @@ import Job from "./Job";
 type JobWithCompany = {
   id: string;
   name: string;
-  desc: string;
+  shortDesc: string;
   applicationUrl: string;
   company: string;
   icon: string;
@@ -24,7 +24,7 @@ const JobPosts = ({ jobs, headerText, showDelete = false }: {
   const filteredJobs = jobs.filter((job) => {
     const searchText = searchQuery.toLowerCase();
     return (
-      job.desc.toLowerCase().includes(searchText) ||
+      job.shortDesc.toLowerCase().includes(searchText) ||
       job.name.toLowerCase().includes(searchText) ||
       job.company.toLowerCase().includes(searchText)
     );
@@ -63,7 +63,7 @@ const JobPosts = ({ jobs, headerText, showDelete = false }: {
               <Job
                 id={job.id}
                 company={job.company}
-                desc={job.desc}
+                shortDesc={job.shortDesc}
                 name={job.name}
                 icon={job.icon ?? "/defaulticon.jpg"}
                 applicationUrl={job.applicationUrl}

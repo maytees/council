@@ -21,7 +21,8 @@ export default async function CompanyPage({
     const formattedJobs = jobs.map(job => ({
         id: job.id,
         name: job.name,
-        desc: job.desc,
+        shortDesc: job.shortDesc,
+        longDesc: job.longDesc,
         applicationUrl: job.applicationUrl,
         company: company.name,
         icon: company.logo ?? "/defaulticon.jpg"

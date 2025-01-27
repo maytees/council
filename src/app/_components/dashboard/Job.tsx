@@ -16,7 +16,7 @@ import Link from "next/link";
 export type JobProps = {
   id: string;
   name: string;
-  desc: string;
+  shortDesc: string;
   company: string;
   icon: string;
   applicationUrl: string;
@@ -24,7 +24,7 @@ export type JobProps = {
   onDelete?: (id: string) => void;
 };
 
-const Job = ({ id, name, desc, company, icon, applicationUrl, showDelete, onDelete }: JobProps) => {
+const Job = ({ id, name, shortDesc, company, icon, applicationUrl, showDelete, onDelete }: JobProps) => {
   const deleteJob = api.jobs.deleteJob.useMutation();
 
   const handleDelete = async () => {
@@ -87,8 +87,8 @@ const Job = ({ id, name, desc, company, icon, applicationUrl, showDelete, onDele
           </div>
         </div>
         <Separator className="my-2" />
-        <div>
-          <p className="text-sm font-light md:text-base">{desc}</p>
+        <div className="text-sm text-muted-foreground">
+          {shortDesc}
         </div>
       </div>
       <div className="mt-3 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-0 md:mt-0">

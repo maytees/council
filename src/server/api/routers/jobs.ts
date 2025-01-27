@@ -2,11 +2,14 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
+const MAX_SHORT_DESC_LENGTH = 200; // 200 characters for short description
+
 export const jobsRouter = createTRPCRouter({
     create: protectedProcedure
         .input(z.object({
             name: z.string(),
-            desc: z.string(),
+            shortDesc: z.string().max(MAX_SHORT_DESC_LENGTH),
+            longDesc: z.string(),
             email: z.string().optional(),
             phone: z.string().optional(),
             website: z.string().optional(),
@@ -23,7 +26,8 @@ export const jobsRouter = createTRPCRouter({
                 const jobPost = await tx.jobPost.create({
                     data: {
                         name: input.name,
-                        desc: input.desc,
+                        shortDesc: input.shortDesc,
+                        longDesc: input.longDesc,
                         email: input.email,
                         phone: input.phone,
                         website: input.website,

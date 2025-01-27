@@ -4,6 +4,7 @@ import { api } from "@/trpc/server";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
 
 export default async function JobPage({
     params: { id },
@@ -41,9 +42,18 @@ export default async function JobPage({
                         </div>
                     </div>
 
-                    <section className="prose max-w-none dark:prose-invert">
-                        <h2 className="text-2xl font-semibold">Job Description</h2>
-                        <div className="whitespace-pre-wrap">{job.desc}</div>
+                    <section className="mb-6">
+                        <Card className="p-6">
+                            <h2 className="mb-4 text-2xl font-semibold">Overview</h2>
+                            <p className="text-muted-foreground">{job.shortDesc}</p>
+                        </Card>
+                    </section>
+
+                    <section className="rounded-lg border bg-card p-6">
+                        <h2 className="mb-4 text-2xl font-semibold">Job Description</h2>
+                        <div className="prose max-h-[60vh] overflow-y-auto pr-4 max-w-none dark:prose-invert">
+                            <ReactMarkdown>{job.longDesc}</ReactMarkdown>
+                        </div>
                     </section>
                 </div>
 

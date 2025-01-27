@@ -13,51 +13,99 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
+import { type TRPCClientError } from "@trpc/client";
 import { useState } from "react";
 
 const MAX_TITLE_LENGTH = 100;
-const MAX_DESC_LENGTH = 1000;
+const MAX_SHORT_DESC_LENGTH = 200;
+const MAX_LONG_DESC_LENGTH = 5000;
 const MAX_URL_LENGTH = 200;
 
 export interface JobPostProps {
   formattedJobs: {
     id: string;
     name: string;
-    desc: string;
+    shortDesc: string;
+    longDesc: string;
     applicationUrl: string;
     company: string;
     icon: string;
   }[];
 }
 
-const JobPost: React.FC<JobPostProps> = ({ formattedJobs }) => {
+const JobPost: React.FC<JobPostProps> = ({ formattedJobs: initialJobs }) => {
   const utils = api.useUtils();
-  // const { data: myJobs = [] } = api.jobs.getMyJobs.useQuery();
   const { data: schools = [] } = api.school.getAll.useQuery();
+  const [formattedJobs, setFormattedJobs] = useState(initialJobs);
+
   const createJob = api.jobs.create.useMutation({
-    onSuccess: () => {
+    onMutate: async (newJob) => {
+      await utils.jobs.getMyJobs.cancel();
+
+      const optimisticJob = {
+        id: "temp-" + Date.now(),
+        name: newJob.name,
+        shortDesc: newJob.shortDesc,
+        longDesc: newJob.longDesc,
+        applicationUrl: newJob.applicationUrl,
+        company: "Your Company",
+        icon: "/defaulticon.jpg",
+      };
+
+      setFormattedJobs((prev) => [...prev, optimisticJob]);
+
+      return { optimisticJob };
+    },
+    onSuccess: async (result, variables, context) => {
+      // Fetch the company details after job creation
+      const companyData = await utils.company.getById.fetch({ id: result.companyId });
+
+      setFormattedJobs((prev) =>
+        prev.map((job) =>
+          job.id === context?.optimisticJob.id ? {
+            id: result.id,
+            name: result.name,
+            shortDesc: result.shortDesc,
+            longDesc: result.longDesc,
+            applicationUrl: result.applicationUrl,
+            company: companyData?.name ?? "Your Company",
+            icon: companyData?.logo ?? "/defaulticon.jpg",
+          } : job
+        )
+      );
+
       setFormData({
         name: "",
-        desc: "",
+        shortDesc: "",
+        longDesc: "",
         email: "",
         phone: "",
         website: "",
         applicationUrl: "",
         schoolIds: [],
       });
-      void utils.jobs.getMyJobs.invalidate();
+    },
+    onError: (err: TRPCClientError<any>, newJob, context) => {
+      if (context?.optimisticJob) {
+        setFormattedJobs((prev) =>
+          prev.filter((job) => job.id !== context.optimisticJob.id)
+        );
+      }
+      setErrors({ submit: err.message });
     },
   });
 
   const [formData, setFormData] = useState({
     name: "",
-    desc: "",
+    shortDesc: "",
+    longDesc: "",
     email: "",
     phone: "",
     website: "",
     applicationUrl: "",
     schoolIds: [] as string[],
   });
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
@@ -68,10 +116,16 @@ const JobPost: React.FC<JobPostProps> = ({ formattedJobs }) => {
       newErrors.name = `Title must be ${MAX_TITLE_LENGTH} characters or less`;
     }
 
-    if (!formData.desc.trim()) {
-      newErrors.desc = "Job description is required";
-    } else if (formData.desc.length > MAX_DESC_LENGTH) {
-      newErrors.desc = `Description must be ${MAX_DESC_LENGTH} characters or less`;
+    if (!formData.shortDesc.trim()) {
+      newErrors.shortDesc = "Short description is required";
+    } else if (formData.shortDesc.length > MAX_SHORT_DESC_LENGTH) {
+      newErrors.shortDesc = `Short description must be ${MAX_SHORT_DESC_LENGTH} characters or less`;
+    }
+
+    if (!formData.longDesc.trim()) {
+      newErrors.longDesc = "Long description is required";
+    } else if (formData.longDesc.length > MAX_LONG_DESC_LENGTH) {
+      newErrors.longDesc = `Long description must be ${MAX_LONG_DESC_LENGTH} characters or less`;
     }
 
     if (!formData.email && !formData.phone && !formData.website) {
@@ -90,203 +144,154 @@ const JobPost: React.FC<JobPostProps> = ({ formattedJobs }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (validateForm()) {
-      try {
-        await createJob.mutateAsync(formData);
-      } catch (error) {
-        const newErrors: Record<string, string> = {};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-        if (error instanceof Error) {
-          try {
-            // Try to parse the error message as JSON
-            const parsedErrors = JSON.parse(error.message) as Array<{ path?: string[], message: string }>;
-            if (Array.isArray(parsedErrors)) {
-              parsedErrors.forEach((err) => {
-                const path = err.path?.[0];
-                if (path) {
-                  newErrors[path] = err.message;
-                }
-              });
-            }
-          } catch {
-            // If not JSON, use the error message directly
-            newErrors.submit = error.message;
-          }
-        }
-
-        // If no specific errors were parsed, set a generic error
-        if (Object.keys(newErrors).length === 0) {
-          newErrors.submit = "Failed to create job post. Please try again.";
-        }
-
-        setErrors(newErrors);
-      }
+    try {
+      await createJob.mutateAsync(formData);
+    } catch (error) {
+      console.error("Failed to create job:", error);
     }
   };
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-6 lg:flex-row">
-      {/* Job Creation Form */}
-      <div className="w-full lg:w-[500px]">
-        <Card className="p-6">
-          <h2 className="mb-6 text-2xl font-bold">Post a New Job</h2>
-          <p>Please fill out each field in order to post your application</p>
-          <Accordion type="multiple" className="w-full">
-            <AccordionItem value="job-details">
-              <AccordionTrigger>Job Details</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2">
-                  <Label htmlFor="title">Job Title</Label>
-                  <Input
-                    id="title"
-                    value={formData.name}
-                    onChange={(e) => {
-                      setFormData({ ...formData, name: e.target.value });
-                      setErrors({ ...errors, name: "" });
-                    }}
-                    placeholder="e.g. Senior Software Engineer"
-                    maxLength={MAX_TITLE_LENGTH}
-                  />
-                  <div className="flex justify-between text-sm">
-                    {errors.name && <span className="text-red-500">{errors.name}</span>}
-                    <span className="text-muted-foreground">{formData.name.length}/{MAX_TITLE_LENGTH}</span>
-                  </div>
-                </div>
+      <Card className="flex-1 p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Label htmlFor="name">Job Title</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className={errors.name ? "border-red-500" : ""}
+            />
+            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+          </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">Job Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.desc}
-                    onChange={(e) => {
-                      setFormData({ ...formData, desc: e.target.value });
-                      setErrors({ ...errors, desc: "" });
-                    }}
-                    placeholder="Describe the role, requirements, and responsibilities..."
-                    className="min-h-[200px]"
-                    maxLength={MAX_DESC_LENGTH}
-                  />
-                  <div className="flex justify-between text-sm">
-                    {errors.desc && <span className="text-red-500">{errors.desc}</span>}
-                    <span className="text-muted-foreground">{formData.desc.length}/{MAX_DESC_LENGTH}</span>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+          <div>
+            <Label htmlFor="shortDesc">Short Description</Label>
+            <Textarea
+              id="shortDesc"
+              value={formData.shortDesc}
+              onChange={(e) => setFormData({ ...formData, shortDesc: e.target.value })}
+              className={errors.shortDesc ? "border-red-500" : ""}
+              placeholder="Brief overview of the position (max 200 characters)"
+            />
+            {errors.shortDesc && <p className="text-sm text-red-500">{errors.shortDesc}</p>}
+            <p className="mt-1 text-sm text-muted-foreground">
+              {formData.shortDesc.length}/{MAX_SHORT_DESC_LENGTH} characters
+            </p>
+          </div>
 
-            <AccordionItem value="contact-info">
+          <div>
+            <Label htmlFor="longDesc">Full Description (Markdown supported)</Label>
+            <Textarea
+              id="longDesc"
+              value={formData.longDesc}
+              onChange={(e) => setFormData({ ...formData, longDesc: e.target.value })}
+              className={errors.longDesc ? "border-red-500" : ""}
+              placeholder="Detailed job description with requirements, responsibilities, etc. Markdown formatting is supported."
+              rows={10}
+            />
+            {errors.longDesc && <p className="text-sm text-red-500">{errors.longDesc}</p>}
+            <p className="mt-1 text-sm text-muted-foreground">
+              {formData.longDesc.length}/{MAX_LONG_DESC_LENGTH} characters
+            </p>
+          </div>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="contact">
               <AccordionTrigger>Contact Information</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3">
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => {
-                        setFormData({ ...formData, email: e.target.value });
-                        setErrors({ ...errors, contact: "" });
-                      }}
-                      placeholder="contact@company.com"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => {
-                        setFormData({ ...formData, phone: e.target.value });
-                        setErrors({ ...errors, contact: "" });
-                      }}
-                      placeholder="+1 (555) 000-0000"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="website">Company Website</Label>
-                    <Input
-                      id="website"
-                      type="url"
-                      value={formData.website}
-                      onChange={(e) => {
-                        setFormData({ ...formData, website: e.target.value });
-                        setErrors({ ...errors, contact: "" });
-                      }}
-                      placeholder="https://company.com"
-                    />
-                  </div>
-                  {errors.contact && <p className="text-sm text-red-500">{errors.contact}</p>}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="application-details">
-              <AccordionTrigger>Application Details</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2">
-                  <Label htmlFor="applicationUrl">Application URL</Label>
+              <AccordionContent className="space-y-4">
+                <div>
+                  <Label htmlFor="email">Email</Label>
                   <Input
-                    id="applicationUrl"
-                    type="url"
-                    value={formData.applicationUrl}
-                    onChange={(e) => {
-                      setFormData({ ...formData, applicationUrl: e.target.value });
-                      setErrors({ ...errors, applicationUrl: "" });
-                    }}
-                    placeholder="https://company.com/careers/apply"
-                    maxLength={MAX_URL_LENGTH}
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
-                  {errors.applicationUrl && <p className="text-sm text-red-500">{errors.applicationUrl}</p>}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
 
-            <AccordionItem value="schools">
-              <AccordionTrigger>Target Schools</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2">
-                  <Label>Select Schools</Label>
-                  <div className="space-y-2">
-                    {schools.map((school) => (
-                      <div key={school.id} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id={school.id}
-                          checked={formData.schoolIds.includes(school.id)}
-                          onChange={(e) => {
-                            const newSchoolIds = e.target.checked
-                              ? [...formData.schoolIds, school.id]
-                              : formData.schoolIds.filter(id => id !== school.id);
-                            setFormData({ ...formData, schoolIds: newSchoolIds });
-                            setErrors({ ...errors, schoolIds: "" });
-                          }}
-                        />
-                        <Label htmlFor={school.id}>{school.name}</Label>
-                      </div>
-                    ))}
-                  </div>
-                  {errors.schoolIds && <p className="text-sm text-red-500">{errors.schoolIds}</p>}
+                <div>
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
                 </div>
+
+                <div>
+                  <Label htmlFor="website">Website</Label>
+                  <Input
+                    id="website"
+                    type="url"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  />
+                </div>
+                {errors.contact && <p className="text-sm text-red-500">{errors.contact}</p>}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
 
-          <Button onClick={handleSubmit} className="mt-6 w-full">
-            Post job
-          </Button>
-          <p className="mt-1 text-sm font-light text-muted-foreground">Before your job is posted, it must be approved by school counselors.</p>
-          {errors.submit && (
-            <p className="mt-1 text-sm text-red-500">{errors.submit}</p>
-          )}
-        </Card>
-      </div>
+          <div>
+            <Label htmlFor="applicationUrl">Application URL</Label>
+            <Input
+              id="applicationUrl"
+              type="url"
+              value={formData.applicationUrl}
+              onChange={(e) => setFormData({ ...formData, applicationUrl: e.target.value })}
+              className={errors.applicationUrl ? "border-red-500" : ""}
+            />
+            {errors.applicationUrl && (
+              <p className="text-sm text-red-500">{errors.applicationUrl}</p>
+            )}
+          </div>
 
-      {/* Job Listings */}
+          <div>
+            <Label>Select Schools</Label>
+            <div className="mt-2 space-y-2">
+              {schools.map((school) => (
+                <label key={school.id} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.schoolIds.includes(school.id)}
+                    onChange={(e) => {
+                      const newSchoolIds = e.target.checked
+                        ? [...formData.schoolIds, school.id]
+                        : formData.schoolIds.filter((id) => id !== school.id);
+                      setFormData({ ...formData, schoolIds: newSchoolIds });
+                    }}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <span>{school.name}</span>
+                </label>
+              ))}
+            </div>
+            {errors.schoolIds && (
+              <p className="mt-1 text-sm text-red-500">{errors.schoolIds}</p>
+            )}
+          </div>
+
+          {errors.submit && <p className="text-sm text-red-500">{errors.submit}</p>}
+
+          <Button type="submit" className="w-full">
+            Post Job
+          </Button>
+        </form>
+      </Card>
+
       <div className="flex-1">
-        <JobPosts headerText="Your Job Listings" jobs={formattedJobs} showDelete={true} />
+        <JobPosts
+          headerText="Your Job Listings"
+          jobs={formattedJobs}
+          showDelete={true}
+        />
       </div>
     </div>
   );

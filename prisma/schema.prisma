@@ -111,7 +111,8 @@ model VerificationToken {
 model JobPost {
     id              String              @id @default(cuid())
     name            String
-    desc            String
+    shortDesc       String
+    longDesc        String
     email           String?
     phone           String?
     website         String?
