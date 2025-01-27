@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { api } from "@/trpc/react";
 import { BookmarkPlus, Flag, MoreVertical, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,9 +20,23 @@ export type JobProps = {
   company: string;
   icon: string;
   applicationUrl: string;
+  showDelete?: boolean;
+  onDelete?: (id: string) => void;
 };
 
-const Job = ({ id, name, desc, company, icon, applicationUrl }: JobProps) => {
+const Job = ({ id, name, desc, company, icon, applicationUrl, showDelete, onDelete }: JobProps) => {
+  const deleteJob = api.jobs.deleteJob.useMutation();
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    try {
+      await deleteJob.mutateAsync({ jobId: id });
+      onDelete(id);
+    } catch (error: unknown) {
+      console.error('Failed to delete job:', error instanceof Error ? error.message : 'Unknown error');
+    }
+  };
+
   return (
     <div className="flex h-auto w-full flex-col justify-between rounded-2xl border px-3 py-3 shadow-md hover:cursor-pointer md:my-2 md:h-[16rem] md:w-[40rem] md:px-5 md:py-4">
       <div>
@@ -79,6 +96,15 @@ const Job = ({ id, name, desc, company, icon, applicationUrl }: JobProps) => {
           Posted recently
         </p>
         <div className="flex w-full flex-row items-end justify-end gap-2 sm:w-auto md:gap-3">
+          {showDelete && (
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              className="px-3"
+            >
+              Delete
+            </Button>
+          )}
           <Button variant="link" asChild>
             <Link href={`/company/${id}`}>Contact</Link>
           </Button>

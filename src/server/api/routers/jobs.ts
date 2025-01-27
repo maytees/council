@@ -28,7 +28,11 @@ export const jobsRouter = createTRPCRouter({
                         phone: input.phone,
                         website: input.website,
                         applicationUrl: input.applicationUrl,
-                        companyId: company.id,
+                        company: {
+                            connect: {
+                                id: company.id
+                            }
+                        },
                         approvalStatus: "PENDING",
                     },
                 });
@@ -71,7 +75,6 @@ export const jobsRouter = createTRPCRouter({
             return ctx.db.jobPost.findMany({
                 where: {
                     companyId: input.companyId,
-                    approvalStatus: "APPROVED",
                 },
                 include: {
                     company: true,
@@ -132,17 +135,33 @@ export const jobsRouter = createTRPCRouter({
 
             if (!school) throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authorized" });
 
-            return ctx.db.schoolJobApproval.update({
-                where: {
-                    jobPostId_schoolId: {
-                        jobPostId: input.jobPostId,
-                        schoolId: input.schoolId,
+            return ctx.db.$transaction(async (tx) => {
+                await tx.schoolJobApproval.update({
+                    where: {
+                        jobPostId_schoolId: {
+                            jobPostId: input.jobPostId,
+                            schoolId: input.schoolId,
+                        },
                     },
-                },
-                data: {
-                    status: input.status,
-                    denialReason: input.denialReason,
-                },
+                    data: {
+                        status: input.status,
+                        denialReason: input.denialReason,
+                    },
+                });
+
+                const approvedByAnySchool = await tx.schoolJobApproval.findFirst({
+                    where: {
+                        jobPostId: input.jobPostId,
+                        status: 'APPROVED',
+                    },
+                });
+
+                await tx.jobPost.update({
+                    where: { id: input.jobPostId },
+                    data: {
+                        approvalStatus: approvedByAnySchool ? 'APPROVED' : input.status,
+                    },
+                });
             });
         }),
 
@@ -181,6 +200,37 @@ export const jobsRouter = createTRPCRouter({
                         },
                     },
                 },
+            });
+        }),
+
+    deleteJob: protectedProcedure
+        .input(z.object({
+            jobId: z.string(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            // Check if the user owns the company that posted this job
+            const job = await ctx.db.jobPost.findFirst({
+                where: {
+                    id: input.jobId,
+                    company: {
+                        userId: ctx.session.user.id,
+                    },
+                },
+            });
+
+            if (!job) throw new TRPCError({ code: "UNAUTHORIZED", message: "Not authorized to delete this job" });
+
+            // Delete the job and all related approvals
+            return ctx.db.$transaction(async (tx) => {
+                // Delete all school approvals first
+                await tx.schoolJobApproval.deleteMany({
+                    where: { jobPostId: input.jobId },
+                });
+
+                // Then delete the job post
+                return tx.jobPost.delete({
+                    where: { id: input.jobId },
+                });
             });
         }),
 });

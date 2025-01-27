@@ -19,9 +19,20 @@ const MAX_TITLE_LENGTH = 100;
 const MAX_DESC_LENGTH = 1000;
 const MAX_URL_LENGTH = 200;
 
-const PostAJob = () => {
+export interface JobPostProps {
+  formattedJobs: {
+    id: string;
+    name: string;
+    desc: string;
+    applicationUrl: string;
+    company: string;
+    icon: string;
+  }[];
+}
+
+const JobPost: React.FC<JobPostProps> = ({ formattedJobs }) => {
   const utils = api.useUtils();
-  const { data: myJobs = [] } = api.jobs.getMyJobs.useQuery();
+  // const { data: myJobs = [] } = api.jobs.getMyJobs.useQuery();
   const { data: schools = [] } = api.school.getAll.useQuery();
   const createJob = api.jobs.create.useMutation({
     onSuccess: () => {
@@ -113,15 +124,6 @@ const PostAJob = () => {
       }
     }
   };
-
-  const formattedJobs = myJobs.map(job => ({
-    id: job.id,
-    name: job.name,
-    desc: job.desc,
-    applicationUrl: job.applicationUrl,
-    company: job.company.name,
-    icon: job.company.logo ?? "/defaulticon.jpg"
-  }));
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-6 lg:flex-row">
@@ -284,10 +286,10 @@ const PostAJob = () => {
 
       {/* Job Listings */}
       <div className="flex-1">
-        <JobPosts headerText="Your Job Listings" jobs={formattedJobs} />
+        <JobPosts headerText="Your Job Listings" jobs={formattedJobs} showDelete={true} />
       </div>
     </div>
   );
 };
 
-export default PostAJob;
+export default JobPost;

@@ -1,7 +1,7 @@
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
-import PostAJob from "./JobPost";
+import JobPost from "./JobPost";
 
 const PostJobPage = async () => {
   const session = await auth();
@@ -20,7 +20,22 @@ const PostJobPage = async () => {
     return redirect("/dashboard");
   }
 
-  return <PostAJob />;
+  const jobs = await api.jobs.getMyJobs();
+
+  const formattedJobs = jobs.map((job) => ({
+    id: job.id,
+    name: job.name,
+    desc: job.desc,
+    applicationUrl: job.applicationUrl,
+    company: job.company.name,
+    icon: job.company.logo ?? "/defaulticon.jpg",
+  }));
+
+  return (
+    <div className="container mx-auto py-6">
+      <JobPost formattedJobs={formattedJobs} />
+    </div>
+  );
 };
 
 export default PostJobPage;

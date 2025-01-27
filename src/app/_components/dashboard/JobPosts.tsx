@@ -14,7 +14,11 @@ type JobWithCompany = {
   icon: string;
 };
 
-const JobPosts = ({ jobs, headerText }: { jobs: JobWithCompany[], headerText?: string }) => {
+const JobPosts = ({ jobs, headerText, showDelete = false }: {
+  jobs: JobWithCompany[],
+  headerText?: string,
+  showDelete?: boolean
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredJobs = jobs.filter((job) => {
@@ -63,6 +67,10 @@ const JobPosts = ({ jobs, headerText }: { jobs: JobWithCompany[], headerText?: s
                 name={job.name}
                 icon={job.icon ?? "/defaulticon.jpg"}
                 applicationUrl={job.applicationUrl}
+                showDelete={showDelete}
+                onDelete={() => {
+                  // Optionally handle local state update
+                }}
               />
             </div>
           ))
