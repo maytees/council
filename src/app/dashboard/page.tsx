@@ -1,11 +1,11 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { BookmarkPlus, Building2, Users } from "lucide-react";
+import { BookmarkPlus, BookOpen, Briefcase, FileText, GraduationCap, HandshakeIcon, LightbulbIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import JobPosts from "../_components/dashboard/JobPosts";
 
@@ -92,18 +92,26 @@ export default async function DashboardPage() {
 
         <Card className="p-6 lg:block">
           <div className="mb-4 flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            <h3 className="font-semibold">Connected Friends</h3>
+            <GraduationCap className="h-5 w-5" />
+            <h3 className="font-semibold">Quick Resources</h3>
           </div>
           <div className="flex flex-col gap-4">
-            {["Alice Smith", "Bob Johnson", "Carol White"].map((friend) => (
-              <div key={friend} className="flex items-center gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>{friend[0]}</AvatarFallback>
-                </Avatar>
-                <span className="text-sm">{friend}</span>
-              </div>
-            ))}
+            <Link href="/students/resume" className="group flex items-center gap-3 hover:text-primary">
+              <FileText className="h-4 w-4" />
+              <span className="text-sm group-hover:underline">Resume Writing Tips</span>
+            </Link>
+            <Link href="/students/interview" className="group flex items-center gap-3 hover:text-primary">
+              <Briefcase className="h-4 w-4" />
+              <span className="text-sm group-hover:underline">Interview Preparation</span>
+            </Link>
+            <Link href="/students/apply" className="group flex items-center gap-3 hover:text-primary">
+              <HandshakeIcon className="h-4 w-4" />
+              <span className="text-sm group-hover:underline">Application Guide</span>
+            </Link>
+            <Link href="/students/resources" className="group flex items-center gap-3 hover:text-primary">
+              <BookOpen className="h-4 w-4" />
+              <span className="text-sm group-hover:underline">Career Resources</span>
+            </Link>
           </div>
         </Card>
       </div>
@@ -121,36 +129,43 @@ export default async function DashboardPage() {
       <div className="flex w-full flex-col gap-6 lg:hidden xl:flex xl:w-[300px]">
         <Card className="p-6">
           <div className="mb-4 flex items-center gap-2">
-            <BookmarkPlus className="h-5 w-5" />
-            <h3 className="font-semibold">Saved Jobs</h3>
+            <LightbulbIcon className="h-5 w-5" />
+            <h3 className="font-semibold">Quick Tips</h3>
           </div>
           <div className="flex flex-col gap-4">
-            {[
-              { role: "Frontend Developer", company: "Microsoft" },
-              { role: "Backend Engineer", company: "Meta" },
-            ].map((job) => (
-              <div key={job.role} className="flex flex-col gap-1">
-                <p className="text-sm font-medium">{job.role}</p>
-                <p className="text-xs text-muted-foreground">{job.company}</p>
-              </div>
-            ))}
+            <div className="rounded-lg bg-muted/50 p-3">
+              <p className="text-sm font-medium">Update Your Profile</p>
+              <p className="text-xs text-muted-foreground">A complete profile increases your visibility to employers</p>
+            </div>
+            <div className="rounded-lg bg-muted/50 p-3">
+              <p className="text-sm font-medium">Set Job Alerts</p>
+              <p className="text-xs text-muted-foreground">Never miss relevant opportunities in your field</p>
+            </div>
+            <div className="rounded-lg bg-muted/50 p-3">
+              <p className="text-sm font-medium">Research Companies</p>
+              <p className="text-xs text-muted-foreground">Learn about potential employers before applying</p>
+            </div>
           </div>
         </Card>
 
         <Card className="p-6">
           <div className="mb-4 flex items-center gap-2">
-            <Building2 className="h-5 w-5" />
-            <h3 className="font-semibold">Following Companies</h3>
+            <BookmarkPlus className="h-5 w-5" />
+            <h3 className="font-semibold">Latest Articles</h3>
           </div>
           <div className="flex flex-col gap-4">
-            {["Apple", "Netflix", "Tesla"].map((company) => (
-              <div key={company} className="flex items-center gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>{company[0]}</AvatarFallback>
-                </Avatar>
-                <span className="text-sm">{company}</span>
-              </div>
-            ))}
+            <Link href="/employers/success" className="group flex flex-col gap-1">
+              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">Success Stories</p>
+              <p className="text-xs text-muted-foreground">Read about successful job seekers</p>
+            </Link>
+            <Link href="/employers/guidelines" className="group flex flex-col gap-1">
+              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">Job Search Guide</p>
+              <p className="text-xs text-muted-foreground">Best practices for your job search</p>
+            </Link>
+            <Link href="/students/resources" className="group flex flex-col gap-1">
+              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">Career Development</p>
+              <p className="text-xs text-muted-foreground">Tools and resources for growth</p>
+            </Link>
           </div>
         </Card>
       </div>
