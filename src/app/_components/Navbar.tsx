@@ -42,7 +42,9 @@ import * as React from "react";
 import Icon from "./Icon";
 
 export function Navbar({ session }: { session: Session | null }) {
-  const { data: user } = api.profile.get.useQuery();
+  const { data: user } = api.profile.get.useQuery(undefined, {
+    enabled: !!session
+  });
 
   return (
     <div className="z-50 w-full border-b border-accent bg-background">
