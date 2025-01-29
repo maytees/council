@@ -8,6 +8,7 @@ import { Check, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type JobApprovalProps = {
     schoolId: string;
@@ -20,8 +21,16 @@ const JobApprovalDashboard = ({ schoolId, schoolName }: JobApprovalProps) => {
     const utils = api.useUtils();
 
     const updateApproval = api.jobs.updateApproval.useMutation({
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             void utils.jobs.getPendingJobs.invalidate({ schoolId });
+            toast.success(
+                variables.status === 'APPROVED'
+                    ? "Job posting has been approved"
+                    : "Job posting has been denied"
+            );
+        },
+        onError: (error) => {
+            toast.error("Failed to update job status: " + error.message);
         },
     });
 

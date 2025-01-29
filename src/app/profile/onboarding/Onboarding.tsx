@@ -9,6 +9,7 @@ import { api } from "@/trpc/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 // User related constants
 const MAX_BIO_LENGTH = 500;
@@ -81,7 +82,11 @@ const Onboarding = () => {
 
   const updateProfile = api.profile.update.useMutation({
     onSuccess: () => {
+      toast.success("Profile setup completed successfully!");
       router.push("/dashboard");
+    },
+    onError: (error) => {
+      toast.error("Failed to complete profile setup: " + error.message);
     },
   });
 

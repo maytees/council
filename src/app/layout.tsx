@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { Toaster } from "sonner";
 
 import { type Metadata } from "next";
 import { Sofia_Sans } from "next/font/google";
@@ -35,6 +36,7 @@ export default async function RootLayout({
             <Navbar session={session} />
             {children}
             <Footer />
+            <Toaster richColors closeButton position="top-right" />
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

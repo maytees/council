@@ -18,10 +18,12 @@ const JobPosts = ({
   jobs,
   headerText,
   showDelete = false,
+  hideActions = false,
 }: {
   jobs: JobWithCompany[];
   headerText?: string;
   showDelete?: boolean;
+  hideActions?: boolean;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -80,6 +82,7 @@ const JobPosts = ({
                 }
                 applicationUrl={job.applicationUrl}
                 showDelete={showDelete}
+                hideActions={hideActions}
                 onDelete={() => {
                   // Optionally handle local state update
                 }}

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const MAX_TITLE_LENGTH = 100;
 const MAX_SHORT_DESC_LENGTH = 200;
@@ -52,6 +53,7 @@ const JobPost: React.FC<JobPostProps> = ({ formattedJobs: initialJobs }) => {
       };
 
       setFormattedJobs((prev) => [...prev, optimisticJob]);
+      toast.loading("Creating job posting...");
 
       return { optimisticJob };
     },
@@ -82,6 +84,11 @@ const JobPost: React.FC<JobPostProps> = ({ formattedJobs: initialJobs }) => {
         applicationUrl: "",
         schoolIds: [],
       });
+
+      toast.success("Job posting created successfully! Awaiting counselor approval.");
+    },
+    onError: (err) => {
+      toast.error("Failed to create job posting: " + err.message);
     },
   });
 
@@ -310,6 +317,7 @@ const JobPost: React.FC<JobPostProps> = ({ formattedJobs: initialJobs }) => {
           headerText="Your Job Listings"
           jobs={formattedJobs}
           showDelete={true}
+          hideActions={true}
         />
       </div>
     </div>

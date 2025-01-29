@@ -21,10 +21,11 @@ export type JobProps = {
   icon: string;
   applicationUrl: string;
   showDelete?: boolean;
+  hideActions?: boolean;
   onDelete?: (id: string) => void;
 };
 
-const Job = ({ id, name, shortDesc, company, icon, applicationUrl, showDelete, onDelete }: JobProps) => {
+const Job = ({ id, name, shortDesc, company, icon, applicationUrl, showDelete, hideActions, onDelete }: JobProps) => {
   const deleteJob = api.jobs.deleteJob.useMutation();
 
   const handleDelete = async () => {
@@ -105,14 +106,18 @@ const Job = ({ id, name, shortDesc, company, icon, applicationUrl, showDelete, o
               Delete
             </Button>
           )}
-          <Button variant="link" asChild>
-            <Link href={`/company/${id}`}>Contact</Link>
-          </Button>
-          <Button asChild>
-            <Link href={applicationUrl} target="_blank">
-              Apply
-            </Link>
-          </Button>
+          {!hideActions && (
+            <>
+              <Button variant="link" asChild>
+                <Link href={`/company/${id}`}>Contact</Link>
+              </Button>
+              <Button asChild>
+                <Link href={applicationUrl} target="_blank">
+                  Apply
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>
