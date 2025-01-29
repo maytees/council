@@ -158,6 +158,14 @@ const Footer = () => {
                   Accessibility
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/legal/trademarks"
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Trademarks
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
