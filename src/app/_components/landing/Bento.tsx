@@ -8,19 +8,19 @@ import Ripple from "@/components/ui/ripple";
 import SlideText from "@/components/ui/slide-text";
 import SlideWrapper from "@/components/ui/slide-wrapper";
 import { cn } from "@/lib/utils";
-import { BrainCircuit, Building2, GraduationCap, Network } from "lucide-react";
+import { BookOpen, Building2, GraduationCap, Network } from "lucide-react";
 
 const Bento = () => {
   return (
     <div className="mx-auto max-w-5xl px-6 pt-36">
       <div className="mb-12 text-center">
         <SlideText
-          text="Everything you need to succeed"
+          text="Connecting Students with Opportunities"
           className="text-3xl font-bold tracking-tight"
           delay={0.2}
         />
         <SlideText
-          text="A comprehensive platform designed to connect students with opportunities"
+          text="A platform built by students, for students at South Lakes High School"
           className="mt-4 text-lg text-muted-foreground"
           delay={0.4}
           direction="right"
@@ -30,7 +30,7 @@ const Bento = () => {
       <SlideWrapper delay={0.5}>
         <BentoGrid>
           <BentoCard
-            name="Smart Job Matching"
+            name="Job Listings"
             className="md:col-span-2"
             background={
               <AnimatedGridPattern
@@ -41,14 +41,14 @@ const Bento = () => {
                 )}
               />
             }
-            Icon={BrainCircuit}
-            description="AI-powered matching connects students with relevant opportunities based on their skills and interests."
-            href="/features/matching"
-            cta="Learn about our AI"
+            Icon={Building2}
+            description="Browse and apply to local job opportunities posted by employers and approved by your school counselors."
+            href="/dashboard"
+            cta="View Jobs"
           />
 
           <BentoCard
-            name="Admin Dashboard"
+            name="Career Resources"
             className="md:col-span-1"
             background={
               <FlickeringGrid
@@ -60,14 +60,14 @@ const Bento = () => {
                 color="rgb(var(--foreground))"
               />
             }
-            Icon={Building2}
-            description="Powerful admin panel for guidance counselors to review, approve, and manage job postings from employers."
-            href="/features/admin"
-            cta="View admin features"
+            Icon={BookOpen}
+            description="Access resume writing tips, interview preparation guides, and career development resources."
+            href="/students/resources"
+            cta="Explore Resources"
           />
 
           <BentoCard
-            name="Student Resources"
+            name="Student Success"
             className="md:col-span-1"
             background={
               <DotPattern
@@ -81,13 +81,13 @@ const Bento = () => {
               />
             }
             Icon={GraduationCap}
-            description="Access comprehensive career guidance materials, resume building tools, and interview preparation resources."
-            href="/features/resources"
-            cta="Explore resources"
+            description="Read success stories from fellow students who found opportunities through our platform."
+            href="/employers/success"
+            cta="Read Stories"
           />
 
           <BentoCard
-            name="Growing Network"
+            name="School Network"
             className="md:col-span-2"
             background={
               <Ripple
@@ -98,9 +98,9 @@ const Bento = () => {
               />
             }
             Icon={Network}
-            description="Connect with local employers and join a community of schools while accessing opportunities."
-            href="/features/network"
-            cta="Join our network"
+            description="A collaborative platform where students, counselors, and employers work together to create opportunities."
+            href="/about"
+            cta="Learn More"
           />
         </BentoGrid>
       </SlideWrapper>

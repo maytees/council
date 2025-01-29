@@ -162,7 +162,7 @@ export function Navbar({ session }: { session: Session | null }) {
 
               {/* Pricing - No dropdown */}
               <NavigationMenuItem className="z-50">
-                <Link href="/pricing" legacyBehavior passHref>
+                <Link href="/#pricing" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Pricing
                   </NavigationMenuLink>

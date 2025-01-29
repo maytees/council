@@ -18,14 +18,11 @@ const Pricing = () => {
 
   const proFeatures = [
     "Unlimited job postings",
-    "AI-powered job matching",
     "Premium resources library",
     "Advanced analytics dashboard",
     "Priority support",
     "Custom school branding",
     "Employer verification",
-    "Mobile-friendly interface",
-    "API access",
   ];
 
   return (

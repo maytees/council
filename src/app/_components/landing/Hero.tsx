@@ -42,7 +42,7 @@ const Hero = async () => {
     <div className="relative z-10 mt-28 flex min-h-96 w-screen flex-col items-center justify-end">
       <WordPullUp
         className="relative z-10 text-4xl font-bold tracking-[-0.02em] text-black dark:text-white md:w-[29rem] md:text-5xl md:leading-[3rem]"
-        words="Student opportunities powered by AI"
+        words="Student opportunities made simple"
       />
       <SlideText
         delay={0.5}
