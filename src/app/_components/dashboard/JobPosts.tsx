@@ -14,10 +14,14 @@ type JobWithCompany = {
   icon: string;
 };
 
-const JobPosts = ({ jobs, headerText, showDelete = false }: {
-  jobs: JobWithCompany[],
-  headerText?: string,
-  showDelete?: boolean
+const JobPosts = ({
+  jobs,
+  headerText,
+  showDelete = false,
+}: {
+  jobs: JobWithCompany[];
+  headerText?: string;
+  showDelete?: boolean;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -65,7 +69,15 @@ const JobPosts = ({ jobs, headerText, showDelete = false }: {
                 company={job.company}
                 shortDesc={job.shortDesc}
                 name={job.name}
-                icon={job.icon ?? "/defaulticon.jpg"}
+                icon={
+                  job.company === "Google"
+                    ? "/googlelogo.jpg"
+                    : job.company === "Amazon"
+                      ? "/amazonlogo.webp"
+                      : job.company === "Roblox"
+                        ? "/robloxlogo.webp"
+                        : "/defaulticon.jpg"
+                }
                 applicationUrl={job.applicationUrl}
                 showDelete={showDelete}
                 onDelete={() => {

@@ -25,7 +25,8 @@ const PostJobPage = async () => {
   const formattedJobs = jobs.map((job) => ({
     id: job.id,
     name: job.name,
-    desc: job.desc,
+    shortDesc: job.shortDesc,
+    longDesc: job.longDesc,
     applicationUrl: job.applicationUrl,
     company: job.company.name,
     icon: job.company.logo ?? "/defaulticon.jpg",

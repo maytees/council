@@ -54,17 +54,25 @@ const JobApprovalDashboard = ({ schoolId, schoolName }: JobApprovalProps) => {
                 />
             </div>
             <Separator className="my-4" />
-            <div className="space-y-4">
-                {filteredJobs.length === 0 ? (
-                    <p className="text-center text-muted-foreground">No pending jobs to review</p>
-                ) : (
-                    filteredJobs.map((job) => (
+            {filteredJobs.length === 0 ? (
+                <p className="text-center text-muted-foreground">No pending jobs to review</p>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredJobs.map((job) => (
                         <div key={job.id} className="flex flex-col gap-4 rounded-lg border p-4">
                             <div className="flex items-start justify-between">
                                 <div className="flex gap-4">
                                     <Link href={`/company/${job.company.id}`}>
                                         <Image
-                                            src={job.company.logo ?? "/defaulticon.jpg"}
+                                            src={
+                                                job.company.name === "Google"
+                                                    ? "/googlelogo.jpg"
+                                                    : job.company.name === "Amazon"
+                                                        ? "/amazonlogo.webp"
+                                                        : job.company.name === "Roblox"
+                                                            ? "/robloxlogo.webp"
+                                                            : "/defaulticon.jpg"
+                                            }
                                             alt={job.company.name}
                                             width={50}
                                             height={50}
@@ -101,11 +109,11 @@ const JobApprovalDashboard = ({ schoolId, schoolName }: JobApprovalProps) => {
                             </div>
                             <p className="text-sm">{job.shortDesc}</p>
                         </div>
-                    ))
-                )}
-            </div>
+                    ))}
+                </div>
+            )}
         </Card>
     );
 };
 
-export default JobApprovalDashboard; 
+export default JobApprovalDashboard;

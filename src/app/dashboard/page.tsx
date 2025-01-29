@@ -1,9 +1,16 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { BookmarkPlus, BookOpen, Briefcase, FileText, GraduationCap, HandshakeIcon, LightbulbIcon } from "lucide-react";
+import {
+  BookmarkPlus,
+  BookOpen,
+  Briefcase,
+  FileText,
+  GraduationCap,
+  HandshakeIcon,
+  LightbulbIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -65,9 +72,9 @@ export default async function DashboardPage() {
                     : `Student at ${user.school}`}
               </p>
             </div>
-            <Button className="w-full" asChild>
+            {/* <Button className="w-full" asChild>
               <a href="/profile">View Profile</a>
-            </Button>
+            </Button> */}
           </div>
           <Separator className="my-4" />
           <div className="flex flex-col gap-2">
@@ -96,21 +103,41 @@ export default async function DashboardPage() {
             <h3 className="font-semibold">Quick Resources</h3>
           </div>
           <div className="flex flex-col gap-4">
-            <Link href="/students/resume" className="group flex items-center gap-3 hover:text-primary">
+            <Link
+              href="/students/resume"
+              className="group flex items-center gap-3 hover:text-primary"
+            >
               <FileText className="h-4 w-4" />
-              <span className="text-sm group-hover:underline">Resume Writing Tips</span>
+              <span className="text-sm group-hover:underline">
+                Resume Writing Tips
+              </span>
             </Link>
-            <Link href="/students/interview" className="group flex items-center gap-3 hover:text-primary">
+            <Link
+              href="/students/interview"
+              className="group flex items-center gap-3 hover:text-primary"
+            >
               <Briefcase className="h-4 w-4" />
-              <span className="text-sm group-hover:underline">Interview Preparation</span>
+              <span className="text-sm group-hover:underline">
+                Interview Preparation
+              </span>
             </Link>
-            <Link href="/students/apply" className="group flex items-center gap-3 hover:text-primary">
+            <Link
+              href="/students/apply"
+              className="group flex items-center gap-3 hover:text-primary"
+            >
               <HandshakeIcon className="h-4 w-4" />
-              <span className="text-sm group-hover:underline">Application Guide</span>
+              <span className="text-sm group-hover:underline">
+                Application Guide
+              </span>
             </Link>
-            <Link href="/students/resources" className="group flex items-center gap-3 hover:text-primary">
+            <Link
+              href="/students/resources"
+              className="group flex items-center gap-3 hover:text-primary"
+            >
               <BookOpen className="h-4 w-4" />
-              <span className="text-sm group-hover:underline">Career Resources</span>
+              <span className="text-sm group-hover:underline">
+                Career Resources
+              </span>
             </Link>
           </div>
         </Card>
@@ -119,7 +146,9 @@ export default async function DashboardPage() {
       {/* Main Content */}
       <div className="flex-1">
         <JobPosts
-          headerText={user.userType === "COMPANY" ? "Your Job Listings" : "Available Jobs"}
+          headerText={
+            user.userType === "COMPANY" ? "Your Job Listings" : "Available Jobs"
+          }
           jobs={formattedJobs}
           showDelete={user.userType === "COMPANY"}
         />
@@ -135,15 +164,21 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-4">
             <div className="rounded-lg bg-muted/50 p-3">
               <p className="text-sm font-medium">Update Your Profile</p>
-              <p className="text-xs text-muted-foreground">A complete profile increases your visibility to employers</p>
+              <p className="text-xs text-muted-foreground">
+                A complete profile increases your visibility to employers
+              </p>
             </div>
             <div className="rounded-lg bg-muted/50 p-3">
               <p className="text-sm font-medium">Set Job Alerts</p>
-              <p className="text-xs text-muted-foreground">Never miss relevant opportunities in your field</p>
+              <p className="text-xs text-muted-foreground">
+                Never miss relevant opportunities in your field
+              </p>
             </div>
             <div className="rounded-lg bg-muted/50 p-3">
               <p className="text-sm font-medium">Research Companies</p>
-              <p className="text-xs text-muted-foreground">Learn about potential employers before applying</p>
+              <p className="text-xs text-muted-foreground">
+                Learn about potential employers before applying
+              </p>
             </div>
           </div>
         </Card>
@@ -154,17 +189,38 @@ export default async function DashboardPage() {
             <h3 className="font-semibold">Latest Articles</h3>
           </div>
           <div className="flex flex-col gap-4">
-            <Link href="/employers/success" className="group flex flex-col gap-1">
-              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">Success Stories</p>
-              <p className="text-xs text-muted-foreground">Read about successful job seekers</p>
+            <Link
+              href="/employers/success"
+              className="group flex flex-col gap-1"
+            >
+              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">
+                Success Stories
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Read about successful job seekers
+              </p>
             </Link>
-            <Link href="/employers/guidelines" className="group flex flex-col gap-1">
-              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">Job Search Guide</p>
-              <p className="text-xs text-muted-foreground">Best practices for your job search</p>
+            <Link
+              href="/employers/guidelines"
+              className="group flex flex-col gap-1"
+            >
+              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">
+                Job Search Guide
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Best practices for your job search
+              </p>
             </Link>
-            <Link href="/students/resources" className="group flex flex-col gap-1">
-              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">Career Development</p>
-              <p className="text-xs text-muted-foreground">Tools and resources for growth</p>
+            <Link
+              href="/students/resources"
+              className="group flex flex-col gap-1"
+            >
+              <p className="text-sm font-medium group-hover:text-primary group-hover:underline">
+                Career Development
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Tools and resources for growth
+              </p>
             </Link>
           </div>
         </Card>

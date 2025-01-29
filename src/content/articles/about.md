@@ -11,14 +11,3 @@ The vision of Council is to provide students with a platform that recognizes and
 Our site is carefully designed to promote success through the features such as job listings, an easy application process, and resources intended to assist students in thriving in their chosen fields. Through linking students and employers, we hope to provide the next generation with confidence, commitment, and a deep sense of purpose.
 
 Collectively, we are committed to building a platform that helps students achieve their dreams and brings career possibilities within reach for everyone. For any questions about the application, do not hesitate to contact us at any time!
-
-## Meet the Team
-
-### [Your Name]
-[Role and brief description]
-
-### [Your Name]
-[Role and brief description]
-
-### [Your Name]
-[Role and brief description] 
