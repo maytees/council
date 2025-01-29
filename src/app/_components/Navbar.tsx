@@ -96,7 +96,7 @@ export function Navbar({ session }: { session: Session | null }) {
                       <ListItem href="/employers/post" title="Post a Job">
                         Submit new job listings
                       </ListItem>
-                      <ListItem href="/employers/manage" title="Manage Postings">
+                      <ListItem href="/employers/post" title="Manage Postings">
                         Review your current listings
                       </ListItem>
                       <ListItem href="/employers/guidelines" title="Guidelines">
@@ -129,6 +129,9 @@ export function Navbar({ session }: { session: Session | null }) {
                       </ListItem>
                       <ListItem href="/students/resources" title="Resources">
                         Career development tools
+                      </ListItem>
+                      <ListItem href="/students/success" title="Success Stories">
+                        See successful student stories
                       </ListItem>
                     </ul>
                   </NavigationMenuContent>
@@ -312,7 +315,7 @@ export function Navbar({ session }: { session: Session | null }) {
                             Post a Job
                           </Link>
                           <Link
-                            href="/employers/manage"
+                            href="/employers/post"
                             className="py-2 hover:underline"
                           >
                             Manage Postings
@@ -363,6 +366,12 @@ export function Navbar({ session }: { session: Session | null }) {
                             className="py-2 hover:underline"
                           >
                             Resources
+                          </Link>
+                          <Link
+                            href="/students/success"
+                            className="py-2 hover:underline"
+                          >
+                            Success Stories
                           </Link>
                         </div>
                       </AccordionContent>

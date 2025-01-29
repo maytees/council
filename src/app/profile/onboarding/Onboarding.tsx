@@ -378,7 +378,7 @@ const Onboarding = () => {
               <div className="space-y-6">
                 <div className=" ">
                   <Label htmlFor="school" className="text-lg">
-                    School Name (Optional)
+                    School Name
                   </Label>
                   <Input
                     id="school"
