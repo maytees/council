@@ -37,7 +37,7 @@ const JobPosts = ({
   });
 
   return (
-    <div className="flex h-[97vh] flex-col items-start px-4 pr-10">
+    <div className="flex h-[97vh] flex-col items-start pr-10">
       <div className="flex w-full flex-col items-start justify-between gap-4 md:flex-row md:items-center md:gap-0">
         <h1 className="text-left text-xl font-bold md:text-2xl">
           {headerText ?? "Job postings"}

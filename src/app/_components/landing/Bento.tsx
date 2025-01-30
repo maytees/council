@@ -12,7 +12,7 @@ import { BookOpen, Building2, GraduationCap, Network } from "lucide-react";
 
 const Bento = () => {
   return (
-    <div className="mx-auto max-w-5xl px-6 pt-36">
+    <div className="mx-auto max-w-5xl px-6 pt-36 pb-10">
       <div className="mb-12 text-center">
         <SlideText
           text="Connecting Students with Opportunities"

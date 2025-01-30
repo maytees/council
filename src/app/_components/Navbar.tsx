@@ -164,13 +164,13 @@ export function Navbar({ session }: { session: Session | null }) {
               </NavigationMenuItem>
 
               {/* Pricing - No dropdown */}
-              <NavigationMenuItem className="z-50">
+              {/* <NavigationMenuItem className="z-50">
                 <Link href="/#pricing" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Pricing
                   </NavigationMenuLink>
                 </Link>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
 
               {/* Theme Toggle */}
               <NavigationMenuItem className="z-50">
@@ -401,9 +401,9 @@ export function Navbar({ session }: { session: Session | null }) {
                   <Link href="/about" className="py-2 hover:underline">
                     About
                   </Link>
-                  <Link href="/pricing" className="py-2 hover:underline">
+                  {/* <Link href="/pricing" className="py-2 hover:underline">
                     Pricing
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </SheetContent>

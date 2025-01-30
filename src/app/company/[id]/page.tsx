@@ -32,7 +32,16 @@ export default async function CompanyPage({
         <main className="container mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8">
             <div className="flex items-center gap-6">
                 <Image
-                    src={company.logo ?? "/defaulticon.jpg"}
+                    // src={company.logo ?? "/defaulticon.jpg"}
+                    src={
+                        company.name === "Google"
+                            ? "/googlelogo.jpg"
+                            : company.name === "Amazon"
+                                ? "/amazonlogo.webp"
+                                : company.name === "Roblox"
+                                    ? "/robloxlogo.webp"
+                                    : "/defaulticon.jpg"
+                    }
                     alt={company.name}
                     width={120}
                     height={120}
@@ -53,7 +62,7 @@ export default async function CompanyPage({
                         <p className="text-muted-foreground">{company.description}</p>
                     </section>
 
-
+                    <Separator className="my-10" />
                     <JobPosts headerText="Open Positions" jobs={formattedJobs} />
                 </div>
 
